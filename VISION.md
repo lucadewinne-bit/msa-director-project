@@ -13,8 +13,19 @@ empathy, collaboration, telling a story to a room. Media production is one of
 the best trainers of those skills, and programs like MSA prove it. The platform's
 thesis: AI should lower the executive-functioning and technical barriers to
 making things, so kids spend MORE time on the human parts, not less. Built with
-accessibility (dyslexia, ADHD, pre-readers) as a first-class design constraint,
-because the founder lived it.
+accessibility (dyslexia, ADHD, early readers) as a first-class design constraint,
+because the founder lived it — and grounded in Universal Design for Learning:
+designing for the margins improves the experience for every child.
+
+This sits at the intersection of three missions: MSA's ("inspire emotional and
+creative growth in kids through media production and global storytelling" — each
+child finding their own voice), Anthropic's (a public benefit corporation
+building AI "to serve humanity's long-term well-being"), and the emerging
+consensus in the field that generation is becoming solved while judgment, taste,
+and human direction are the new craft. The kid version of that consensus: the
+mechanics of making media get easier every year; imagination, empathy, and
+collaboration become the whole game. Rule that never bends, at any scale:
+**AI never writes the child's story.**
 
 ## Why it's quarantined here
 Eleven days. V1 must ship. Every feature that belongs to this vision and not to

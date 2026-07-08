@@ -31,3 +31,25 @@ interview and sound exactly like himself.
 - **What would change my mind:** If by end of Day 3 the spec isn't locked,
   process gets cut before scope does.
 - **Outcome:** _pending_
+
+---
+
+**#1 — Voice-first reframe: amplify authorship, not compliance** · 2026-07-04
+- **Decision:** The project's purpose is reframed from "help kids follow
+  production steps" to "shorten the distance between a child's imagination and
+  their finished story." Every concept is now also scored on authorship/voice
+  fit, and the north star + design test ("does this give the child MORE
+  authorship?") were added to CONTEXT.md and REQUIREMENTS.md.
+- **Options considered:** Keep the pure step-chunker framing (strongest ADHD
+  evidence, easiest build, but ethos-neutral — it optimizes compliance with a
+  process rather than serving MSA's mission of self-expression and each child
+  finding their own voice).
+- **Why:** MSA's mission is emotional and creative growth through storytelling;
+  Anthropic's is AI serving humanity's long-term well-being. The aligned move is
+  AI carrying the mechanical load so kids keep the human part. Also honest:
+  the EF science (point of performance, chunking, visual schedules) still fully
+  applies — the reframe changes what the tool is FOR, not what makes it work.
+- **What would change my mind:** If Phase 1 discovery with MSA staff shows the
+  voice-first concepts are too heavy for a 5-day build, fall back to the
+  storyboard-only slice or the plain chunker — explicitly permitted in Step 4.
+- **Outcome:** _pending_

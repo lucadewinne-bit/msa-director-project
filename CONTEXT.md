@@ -22,10 +22,15 @@
   - https://youtu.be/CSSl0Bg0Aao — young Luca's 10th-birthday go-karting story
     (told on camera at the academy)
   - These were old-school stop-motion productions: paper, scissors, color pencils.
-- **Today he WORKS there**, guiding kids ages 5–12 through the same craft:
+- **Today he WORKS there**, guiding kids ages 6–12 through the same craft:
   - Märchen Sagen Academy: https://www.marchensagen.org — nonprofit afterschool +
-    camp program in Downtown Decatur, GA; kids write, produce, and publish short
-    films, TV shows, and music. YouTube: https://www.youtube.com/@wesaymsa
+    camp program in Downtown Decatur, GA; kids ages 6–12 write, produce, and
+    publish short films, TV shows, podcasts and music.
+    YouTube: https://www.youtube.com/@wesaymsa
+  - **MSA's stated mission (use this language):** "to inspire emotional and
+    creative growth in kids through media production and global storytelling" —
+    empowering kids to express themselves, fostering a love of learning, and
+    giving each unique child "a space to find their own voice."
   - Recent stop-motion / green-screen production he led with the kids:
     https://www.youtube.com/watch?v=qdCpq3WAAAs
   - **Summer K.A.M.P. Week 1 — AI Filmmaking**, where Luca guided kids using AI
@@ -33,6 +38,17 @@
 - The arc: a community media program shaped a dyslexic kid → that kid came back to
   teach → now he's building an AI tool so the next kids get an even better version
   of what he got. This is verifiable, public, and clickable. Use it everywhere it fits.
+
+## The project's north star (one sentence, aligned with MSA and Anthropic)
+**AI carries the mechanical load — reading, sequencing, remembering what comes
+next — so the child's energy goes to the irreplaceably human work: imagining,
+telling, performing, and creating together.**
+This mirrors MSA's mission (self-expression, each child finding their own voice)
+and Anthropic's — a public benefit corporation building AI "to serve humanity's
+long-term well-being," with Claude Corps listed among its formal commitments.
+Design test for every feature: *does this give the child MORE authorship, or
+less?* Claude must never write the child's story; it turns the child's own idea
+into something they can make.
 
 ## Other background (use where relevant, don't force it)
 - Competitive swimmer for the **Tonga national swim team** — discipline, performing

@@ -7,8 +7,12 @@ Everything that matters lives in these files. Follow these steps once, in order.
 ## Setup (do this together, ~20 minutes)
 
 1. **On Luca's Claude account, create a Project** called `Claude Corps Application`.
+   In the "What are you trying to achieve?" field, write one sentence:
+   `Get accepted into the Claude Corps October 2026 cohort.`
 2. **Upload ALL the .md files in this folder** to the Project's knowledge.
-3. **Paste this into the Project's custom instructions box:**
+3. **On the Project page, find the "Instructions" section** (the + next to it /
+   "Set custom instructions" — this is a DIFFERENT box than the one in step 1)
+   **and paste this block:**
 
    > You are Luca's project partner for his Claude Corps application (deadline July 17, 2026).
    > Read CONTEXT.md, MASTER_PLAN.md, and REQUIREMENTS.md before responding.
@@ -28,14 +32,19 @@ Everything that matters lives in these files. Follow these steps once, in order.
 - MASTER_PLAN.md and DECISIONS.md are LIVING documents. Whenever Claude updates one,
   Luca replaces the old version in the Project knowledge (delete + re-upload).
 - Day 1 task includes creating a **GitHub account and repo** (see MASTER_PLAN.md).
-  These same files go in the repo. The repo is the backup AND the public evidence
+  These files go in the repo — **EXCEPT CONTEXT.md**, which contains personal and
+  medical details and stays in Project knowledge only. The README carries the
+  public version of Luca's story. The repo is the backup AND the public evidence
   of the spec-driven process — reviewers can watch the thinking evolve in commits.
 - If a chat gets long or lost: no problem. Start a new chat in the Project.
   The files carry everything. That is the whole point of this setup.
 
 ## Roles
 
-- **Luca** owns every decision and every line shipped. He must be able to explain all of it.
+- **Luca** owns every decision and every line shipped. He must be able to explain
+  all of it — enforced by the teach-back rule: every commit gets a one-sentence
+  plain-language explanation from Luca (commit message or voice memo), and Claude
+  regularly asks him to explain a piece of the work back before moving on.
 - **Claude** does heavy lifting on research, drafting, and code — teaching as it goes.
 - **Dad (Tom)** is the daily 15-minute kickoff trigger and accountability partner.
 - **Cutover engineers** are advisors and reviewers ONLY. They never touch the keyboard.

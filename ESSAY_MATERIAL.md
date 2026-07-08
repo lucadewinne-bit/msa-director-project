@@ -4,6 +4,14 @@ Rule: essays are drafted ONLY from real material in this file. Luca talks
 (voice memos encouraged — easier than typing), Claude structures and polishes,
 the voice stays Luca's. Nothing invented, nothing inflated. ~350 words each.
 
+CRITICAL: **assume the reviewer clicks nothing.** A volume screener may never
+open the repo or the videos. Each essay must carry the full story standalone,
+with the hook in the first two sentences; links are a bonus, never the spine.
+
+Mission-fit line worth working in naturally (Luca's words, not corporate):
+the tool exists so AI carries the boring load — reading, sequencing, what's
+next — and the kids keep the good part: imagining, telling, making together.
+
 ## Essay 1 — "A time you made an impact in your community"
 **The spine (already strong, gets stronger when V1 ships):**
 - Full circle: at ~10, Luca was an MSA kid — learning green screen, lights,

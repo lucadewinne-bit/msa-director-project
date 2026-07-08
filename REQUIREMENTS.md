@@ -55,11 +55,22 @@ Fallback cohorts: January 2027 and August 2027.
 1. **Child safety:** tool used WITH staff/parent, never unsupervised chat for young
    kids; zero personal data from children (no names, accounts, stored conversations).
    Testing = observing kids use it alongside staff. Nothing more.
-2. **Luca builds it.** Claude teaches and drafts; Luca owns and can explain every
-   part. Engineers advise/review only.
+2. **Luca builds it — and can explain it.** Claude teaches and drafts; Luca owns
+   every part. Engineers advise/review only. Teach-back rule: every commit gets a
+   one-sentence plain-language explanation from Luca; he reviews and understands
+   every line that ships.
 3. **Shipped beats ambitious.** V1 small enough to finish, demo in 60 seconds,
    and hand off. Anything that threatens the July 17 date gets cut or moved to
    VISION.md.
+4. **Verification, not vibes.** Before building starts, the spec must contain a
+   written TEST_CHECKLIST (10–15 concrete checks: empty input, API failure,
+   double-tap, nonsense kid input, content safety with no adult present, etc.).
+   Definition of done = test checklist passes + the 60-second demo runs clean +
+   one staff member operates the tool unaided in a real session.
+5. **Amplify, never replace, the child's voice.** The design test for every
+   feature: does it give the child MORE authorship, or less? The tool carries the
+   mechanical load (reading, sequencing, remembering what's next); the imagining,
+   telling, and making stay with the child. Claude never writes the child's story.
 
 ## After submission (be ready, don't prepare yet)
 Interview process: practical take-home assessment → 25-minute conversation →
