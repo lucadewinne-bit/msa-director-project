@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git --version)",
+      "Read(//Users/owendewinne/**)",
+      "Read(//Users/owendewinne/Desktop/**)",
+      "Read(//Users/owendewinne/Documents/**)",
+      "Bash(mdfind -name \"spec\" -onlyin /Users/owendewinne)",
+      "Bash(grep -v -E \"\\\\.\\(jpeg|jpg|JPEG|PNG|png|dmg|heic|HEIC|mov|MOV|mp4\\)$\")",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "Bash(cp \"/Users/owendewinne/Downloads/drive-download-20260704T181729Z-3-001/\"*.md .)",
+      "Bash(cp \"/Users/owendewinne/Downloads/directors-assistant-sketch.jsx\" .)",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Add project specs, decisions, plan, and first app sketch *)"
+    ]
+  }
+}
