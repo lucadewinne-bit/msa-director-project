@@ -225,7 +225,7 @@
     cursor: pointer;
     background: white;
   }
-  .movieCard:hover { border: 2px solid #FF8C42; }
+  .movieCard:hover { outline: 2px solid #FF8C42; }
   .movieCard .preview {
     height: 120px;
     background: #FFF8E7;
@@ -242,6 +242,7 @@
     justify-content: space-between;
     gap: 8px;
   }
+  .movieCard .titleBox { flex: 1; min-width: 0; }
   .movieCard .movieTitle {
     font-size: 1em;
     color: #333;
@@ -249,6 +250,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .movieCard .deleteMovie { flex-shrink: 0; }
   .movieCard .steps { font-size: 0.85em; color: #888; }
   .movieCard .deleteMovie {
     background: transparent;
@@ -529,6 +531,7 @@ function showHomePage() {
     meta.className = "meta";
 
     const titleBox = document.createElement("div");
+    titleBox.className = "titleBox";
     const title = document.createElement("div");
     title.className = "movieTitle";
     title.textContent = movie.name;
