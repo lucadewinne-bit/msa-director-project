@@ -64,6 +64,10 @@ For every card give:
   where to point the lamp, mood).
 - sound: one short, concrete microphone/sound tip for this scene (who talks,
   where the mic goes, sound effects the kids can make).
+- edit: one short CapCut editing tip for this scene: which sound effect or
+  music to add and EXACTLY how to do it in CapCut, step by step. Example:
+  "Add a crowd cheer: tap Audio, then Sounds, search 'crowd cheer', tap +
+  to drop it on this clip." Written for a total beginner.
 
 Plain text everywhere - no markdown symbols. Never mention children's names."""
 
@@ -81,8 +85,9 @@ CARD_SCHEMA = {
                     "camera": {"type": "string"},
                     "lights": {"type": "string"},
                     "sound": {"type": "string"},
+                    "edit": {"type": "string"},
                 },
-                "required": ["emoji", "title", "say", "camera", "lights", "sound"],
+                "required": ["emoji", "title", "say", "camera", "lights", "sound", "edit"],
                 "additionalProperties": False,
             },
         }
@@ -100,6 +105,7 @@ PRACTICE_CARDS = [
         "camera": "Put the camera on the tripod, facing the set, about two big steps back.",
         "lights": "Turn on the big lamp and point it at the set from the side.",
         "sound": "No microphone yet — this is building time. Play fun music!",
+        "edit": "In CapCut: tap Audio, then Sounds, search 'upbeat', and tap + to add fun building music.",
     },
     {
         "emoji": "🎥",
@@ -108,6 +114,7 @@ PRACTICE_CARDS = [
         "camera": "Keep the camera still. Make sure the whole set fits in the picture.",
         "lights": "Keep the light steady so the picture doesn't flicker.",
         "sound": "Point the microphone at whoever is talking. Everyone else stays quiet!",
+        "edit": "In CapCut: tap Audio, then Sound FX, search 'whoosh', and tap + to add it when the hero enters.",
     },
 ]
 
