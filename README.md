@@ -23,6 +23,15 @@ It describes the four-phase model: 💡 Brainstorm → 📝 Script → 🗂️ S
 | [PHASE1_PROMPT.md](PHASE1_PROMPT.md) / [VALIDATION_PROMPT.md](VALIDATION_PROMPT.md) | The prompts that drove the research and spec phases |
 | [directors-assistant-sketch.jsx](directors-assistant-sketch.jsx) | Early throwaway concept sketch (pre-pivot) |
 
+## Credits & inspiration
+
+The storytelling approach inside the tool — tell the truth, tell it with a
+story, tell it with pictures, and the PUMA structure (head, spine, legs,
+tail) — is inspired by Dan Roam's book *Show and Tell: How Everybody Can Make
+Extraordinary Presentations*. Concepts adapted in our own words for kids'
+filmmaking; no text or artwork from the book is reproduced here. Go buy it,
+it's great.
+
 ## The process
 
 This project is spec-driven on purpose: research → jobs-to-be-done → options → decision →

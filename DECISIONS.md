@@ -85,3 +85,22 @@ interview and sound exactly like himself.
 - **What would change my mind:** If saving confuses staff during testing, or
   anything child-identifying ever ends up in cards, remove it.
 - **Outcome:** _pending_
+
+---
+
+**#4 — Adopted Dan Roam's "Show and Tell" as the storytelling backbone** · 2026-07-08
+- **Decision:** The brainstorm partner follows Roam's three rules (tell the
+  truth, tell it with a story, tell it with pictures). The card maker
+  structures every card set like Roam's PUMA: head (big question as the
+  opening title card), spine (one scene per card), legs (the camera/lights/
+  sound/edit tips), tail (ending + the one feeling the audience takes home).
+- **Options considered:** Keep the looser hero-problem-fix-ending structure;
+  invent our own framework from scratch.
+- **Why:** I know this book and its method works. It gives every movie a
+  real backbone instead of just a list of scenes — and it fits MSA's mission:
+  "tell the truth" IS voice-first storytelling. Copyright handled honestly:
+  concepts in our own words, full credit in the README, none of the book's
+  text or drawings copied.
+- **What would change my mind:** If the PUMA-shaped cards confuse kids or
+  staff in testing, drop back to the plain scene list.
+- **Outcome:** _pending_
