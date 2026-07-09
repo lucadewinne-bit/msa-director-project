@@ -71,6 +71,9 @@
   button:disabled { opacity: 0.5; }
   #cardsButton { background: #4E9F3D; }
 
+  /* Step cards button sleeps (dim) until the story is complete */
+  #cardsButton.waiting { opacity: 0.45; }
+
   /* When the story is ready, the Step cards button glows to say "press me!" */
   #cardsButton.ready {
     animation: glow 1.2s ease-in-out infinite alternate;
@@ -178,7 +181,7 @@ Type a kid's movie idea to get started — for example: "a dragon who is scared 
 <form id="chatForm">
   <input id="chatInput" placeholder="Type here, then press Send…" autocomplete="off">
   <button id="sendButton">Send 🎥</button>
-  <button id="cardsButton" type="button">Step cards 🗂️</button>
+  <button id="cardsButton" type="button" class="waiting">Step cards 🗂️</button>
 </form>
 
 <script>
@@ -243,9 +246,14 @@ form.addEventListener("submit", async (event) => {
   input.focus();
 });
 
+// Step cards are locked until the story is complete
+let storyReady = false;
+
 // When the story is complete: a big invitation + a glowing button,
 // so the next step is impossible to miss.
 function showStoryReady() {
+  storyReady = true;
+  cardsButton.classList.remove("waiting");
   const invite = document.createElement("div");
   invite.className = "bigNext";
   invite.textContent = "🎉 Your story is ready, director! Next step:";
@@ -369,8 +377,12 @@ document.getElementById("exitButton").addEventListener("click", () => {
 });
 
 cardsButton.addEventListener("click", async () => {
-  if (history.length === 0) {
-    showBubble("Brainstorm a story first, then press Step cards! 🎬", "claude");
+  if (!storyReady) {
+    showBubble(
+      "Not yet, director! 🎬 Finish brainstorming the whole story first — " +
+      "hero, place, problem, fix, and ending. When it's ready, this button will glow!",
+      "claude"
+    );
     return;
   }
 
