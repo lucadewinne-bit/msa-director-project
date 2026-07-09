@@ -169,44 +169,94 @@
     padding: 4px 10px;
   }
 
-  /* Home page — first thing you see: new story, or a saved movie */
+  /* Home page — like the Google Slides home: start-new gallery on top,
+     your saved movies as preview cards below */
   #homePage {
     position: fixed;
     inset: 0;
-    background: #FFF8E7;
+    background: white;
     display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 24px;
+    overflow-y: auto;
     z-index: 20;
   }
-  #homePage.open { display: flex; }
-  #homePage h1 { font-size: 2.2em; margin: 0; }
-  #newStoryButton { font-size: 1.5em; padding: 20px 40px; }
-  #savedList {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 90%;
-    max-width: 480px;
-    max-height: 40vh;
-    overflow-y: auto;
+  #homePage.open { display: block; }
+  .homeTop {
+    background: #F4F0E6;
+    padding: 24px 32px 32px 32px;
   }
-  .savedMovie {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  .savedMovie .openMovie {
-    flex: 1;
-    background: white;
+  .homeTop h2, .homeBottom h2 {
+    font-size: 1.3em;
+    margin: 0 0 16px 0;
     color: #333;
-    border: 3px solid #4E89AE;
-    text-align: left;
   }
-  .savedMovie .deleteMovie { background: #D64545; }
+  .templateRow {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .template { width: 180px; cursor: pointer; }
+  .template .thumb {
+    background: white;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+  }
+  .template:hover .thumb { border: 2px solid #FF8C42; }
+  .template .label {
+    font-size: 1em;
+    margin-top: 8px;
+    color: #333;
+  }
+  .homeBottom { padding: 24px 32px; }
+  #movieGrid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .movieCard {
+    width: 200px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    background: white;
+  }
+  .movieCard:hover { border: 2px solid #FF8C42; }
+  .movieCard .preview {
+    height: 120px;
+    background: #FFF8E7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.2em;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .movieCard .meta {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .movieCard .movieTitle {
+    font-size: 1em;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .movieCard .steps { font-size: 0.85em; color: #888; }
+  .movieCard .deleteMovie {
+    background: transparent;
+    color: #888;
+    font-size: 1em;
+    padding: 4px 6px;
+  }
+  .noMovies { color: #888; font-size: 1.1em; }
   #homeButton {
     position: absolute;
     top: 10px;
@@ -221,11 +271,33 @@
 
 <header>🎬 Script Builder <button id="homeButton" title="Home">🏠</button></header>
 
-<!-- Home page: start a new story, or open a saved movie's step cards -->
+<!-- Home page: like Google Slides — start-new gallery + your saved movies -->
 <div id="homePage" class="open">
-  <h1>🎬 Script Builder</h1>
-  <button id="newStoryButton">New story ▶</button>
-  <div id="savedList"></div>
+  <div class="homeTop">
+    <h2>Start a new movie</h2>
+    <div class="templateRow">
+      <div class="template" id="newStoryButton">
+        <div class="thumb">➕</div>
+        <div class="label">Blank story</div>
+      </div>
+      <div class="template starter" data-idea="a dragon who is scared of fire">
+        <div class="thumb">🐉</div>
+        <div class="label">Dragon scared of fire</div>
+      </div>
+      <div class="template starter" data-idea="soccer on the moon with big floaty jumps">
+        <div class="thumb">🌕</div>
+        <div class="label">Soccer on the moon</div>
+      </div>
+      <div class="template starter" data-idea="a robot who wants to go outside and play">
+        <div class="thumb">🤖</div>
+        <div class="label">Robot wants to play</div>
+      </div>
+    </div>
+  </div>
+  <div class="homeBottom">
+    <h2>Your movies</h2>
+    <div id="movieGrid"></div>
+  </div>
 </div>
 <div id="staffReminder">🛡️ Staff reminder: describe the story, not the kids — no names, ages, or schools.</div>
 
@@ -433,29 +505,45 @@ function loadMovies() {
 }
 
 function showHomePage() {
-  const listBox = document.getElementById("savedList");
-  listBox.innerHTML = "";
+  const grid = document.getElementById("movieGrid");
+  grid.innerHTML = "";
 
-  for (const movie of loadMovies()) {
-    const row = document.createElement("div");
-    row.className = "savedMovie";
+  const movies = loadMovies();
+  if (movies.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "noMovies";
+    empty.textContent = "No saved movies yet — make step cards and press Save 💾!";
+    grid.appendChild(empty);
+  }
 
-    const open = document.createElement("button");
-    open.className = "openMovie";
-    open.textContent = "🎞️ " + movie.name;
-    open.addEventListener("click", () => {
-      homePage.classList.remove("open");
-      cards = movie.cards;
-      storyReady = true;
-      openCardMode();
-    });
+  for (const movie of movies) {
+    const card = document.createElement("div");
+    card.className = "movieCard";
+
+    // Preview: the first step's emoji, big — like a mini movie poster
+    const preview = document.createElement("div");
+    preview.className = "preview";
+    preview.textContent = movie.cards[0] ? movie.cards[0].emoji : "🎬";
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+
+    const titleBox = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "movieTitle";
+    title.textContent = movie.name;
+    const steps = document.createElement("div");
+    steps.className = "steps";
+    steps.textContent = movie.cards.length + (movie.cards.length === 1 ? " step" : " steps");
+    titleBox.append(title, steps);
 
     const trash = document.createElement("button");
     trash.className = "deleteMovie";
     trash.textContent = "🗑️";
     trash.title = "Delete " + movie.name;
     // First tap asks "Sure?", second tap really deletes
-    trash.addEventListener("click", () => {
+    trash.addEventListener("click", (event) => {
+      event.stopPropagation();   // don't open the movie by accident
       if (trash.textContent !== "Sure?") {
         trash.textContent = "Sure?";
         setTimeout(() => { trash.textContent = "🗑️"; }, 3000);
@@ -466,8 +554,15 @@ function showHomePage() {
       showHomePage();
     });
 
-    row.append(open, trash);
-    listBox.appendChild(row);
+    meta.append(titleBox, trash);
+    card.append(preview, meta);
+    card.addEventListener("click", () => {
+      homePage.classList.remove("open");
+      cards = movie.cards;
+      storyReady = true;
+      openCardMode();
+    });
+    grid.appendChild(card);
   }
   homePage.classList.add("open");
 }
@@ -476,6 +571,15 @@ document.getElementById("newStoryButton").addEventListener("click", () => {
   homePage.classList.remove("open");
   input.focus();
 });
+
+// Starter ideas: click one and the brainstorm begins with that idea
+for (const starter of document.querySelectorAll(".starter")) {
+  starter.addEventListener("click", () => {
+    homePage.classList.remove("open");
+    input.value = starter.dataset.idea;
+    form.requestSubmit();
+  });
+}
 
 document.getElementById("homeButton").addEventListener("click", showHomePage);
 
