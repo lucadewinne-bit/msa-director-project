@@ -53,3 +53,19 @@ interview and sound exactly like himself.
   voice-first concepts are too heavy for a 5-day build, fall back to the
   storyboard-only slice or the plain chunker — explicitly permitted in Step 4.
 - **Outcome:** _pending_
+
+---
+
+**#2 — Step cards include camera, lights, and sound setup** · 2026-07-08
+- **Decision:** Every step card shows not just what to say to the kids, but
+  three short setup tips: 🎥 camera, 💡 lights, 🎤 sound — written for a
+  non-expert adult.
+- **Options considered:** Plain scene descriptions (what Claude gave first);
+  story-only cards leaving production details to staff experience.
+- **Why:** I tested the brainstorm myself and realized the scene list didn't
+  actually help anyone FILM anything. The gap the tool fills is getting from
+  story to studio — so each card has to answer "how do we set this shot up?"
+  for a staff member who isn't a filmmaker.
+- **What would change my mind:** If MSA staff testing shows the setup tips are
+  ignored or too generic, simplify back to story-only cards.
+- **Outcome:** _pending_ — test with staff at MSA

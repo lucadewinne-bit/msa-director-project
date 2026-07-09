@@ -62,6 +62,33 @@
     cursor: pointer;
   }
   button:disabled { opacity: 0.5; }
+  #cardsButton { background: #4E9F3D; }
+
+  /* Step cards — big, visual, one glance tells you everything */
+  .card {
+    background: white;
+    border: 4px solid #4E9F3D;
+    border-radius: 18px;
+    padding: 18px;
+    max-width: 85%;
+    align-self: flex-start;
+  }
+  .card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.4em;
+  }
+  .card .say {
+    font-size: 1.2em;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .card .setup {
+    background: #EEF7EA;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 1em;
+    line-height: 1.7;
+  }
 </style>
 </head>
 <body>
@@ -76,6 +103,7 @@ Type a kid's movie idea to get started — for example: "a dragon who is scared 
 <form id="chatForm">
   <input id="chatInput" placeholder="Type here, then press Send…" autocomplete="off">
   <button id="sendButton">Send 🎥</button>
+  <button id="cardsButton" type="button">Step cards 🗂️</button>
 </form>
 
 <script>
@@ -131,6 +159,68 @@ form.addEventListener("submit", async (event) => {
 
   button.disabled = false;
   input.focus();
+});
+
+// The "Step cards" button: turn the brainstormed story into filming cards,
+// each with what to say + camera, lights, and sound setup.
+const cardsButton = document.getElementById("cardsButton");
+
+function showCard(card) {
+  const box = document.createElement("div");
+  box.className = "card";
+
+  const title = document.createElement("h2");
+  title.textContent = card.emoji + " " + card.title;
+
+  const say = document.createElement("div");
+  say.className = "say";
+  say.textContent = card.say;
+
+  const setup = document.createElement("div");
+  setup.className = "setup";
+  setup.textContent =
+    "🎥 Camera: " + card.camera + "\n" +
+    "💡 Lights: " + card.lights + "\n" +
+    "🎤 Sound: " + card.sound;
+  setup.style.whiteSpace = "pre-wrap";
+
+  box.append(title, say, setup);
+  messagesBox.appendChild(box);
+  messagesBox.scrollTop = messagesBox.scrollHeight;
+}
+
+cardsButton.addEventListener("click", async () => {
+  if (history.length === 0) {
+    showBubble("Brainstorm a story first, then press Step cards! 🎬", "claude");
+    return;
+  }
+
+  cardsButton.disabled = true;
+  button.disabled = true;
+  const waiting = showBubble("🗂️ Making your step cards… (this takes a moment)", "claude");
+
+  try {
+    const response = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ want: "cards", history: history }),
+    });
+    const reply = await response.json();
+    waiting.remove();
+
+    if (reply.error) {
+      showBubble("⚠️ " + reply.error, "error");
+    } else {
+      showBubble("Here are your step cards, director! 🎬", "claude");
+      for (const card of reply.cards) showCard(card);
+    }
+  } catch {
+    waiting.remove();
+    showBubble("⚠️ Couldn't reach the server. Is server.py still running?", "error");
+  }
+
+  cardsButton.disabled = false;
+  button.disabled = false;
 });
 </script>
 

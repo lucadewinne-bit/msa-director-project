@@ -38,7 +38,78 @@ Rules you must always follow:
 - Use fun film-set vocabulary (director, scene, action!) when it fits.
 - Never ask for or mention children's names or personal details.
   If any appear, gently remind staff: "describe the story, not the kids."
+- Plain text only. Never use markdown symbols like ** or # — they show up
+  as ugly stars on screen.
 """
+
+# ---- Step cards (SPEC.md phase 3) ----
+# When staff presses "Make step cards", we ask Claude for the story broken
+# into filming steps — each with what to say to the kids, PLUS how to set
+# up the camera, lights, and microphone for that scene.
+CARD_INSTRUCTIONS = """You are the step-card maker inside the MSA Script Builder,
+used at Märchen Sagen Academy where kids ages 4-10 film short movies with staff
+(green screen and stop-motion, small indoor studio).
+
+You will get a brainstorm conversation about a story. Turn the story into
+5-8 step cards that walk kids and staff through FILMING it, scene by scene.
+
+For every card give:
+- emoji: one fun emoji for the step
+- title: a short exciting title (5 words max)
+- say: what the staff member reads out loud to the kids. Fun, encouraging,
+  reading level about age 6, film-set vocabulary. 1-3 short sentences.
+- camera: one short, concrete tip for setting up the camera shot for this
+  scene (angle, distance, still or moving). Written for a non-expert adult.
+- lights: one short, concrete lighting tip for this scene (bright/dim,
+  where to point the lamp, mood).
+- sound: one short, concrete microphone/sound tip for this scene (who talks,
+  where the mic goes, sound effects the kids can make).
+
+Plain text everywhere - no markdown symbols. Never mention children's names."""
+
+CARD_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "cards": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "emoji": {"type": "string"},
+                    "title": {"type": "string"},
+                    "say": {"type": "string"},
+                    "camera": {"type": "string"},
+                    "lights": {"type": "string"},
+                    "sound": {"type": "string"},
+                },
+                "required": ["emoji", "title", "say", "camera", "lights", "sound"],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["cards"],
+    "additionalProperties": False,
+}
+
+# Pretend cards for free practice mode
+PRACTICE_CARDS = [
+    {
+        "emoji": "🎬",
+        "title": "Build the set",
+        "say": "First we build the place where our story happens! You have ten minutes — build fast like a real movie crew!",
+        "camera": "Put the camera on the tripod, facing the set, about two big steps back.",
+        "lights": "Turn on the big lamp and point it at the set from the side.",
+        "sound": "No microphone yet — this is building time. Play fun music!",
+    },
+    {
+        "emoji": "🎥",
+        "title": "Film the first scene",
+        "say": "Places, everyone! Our hero enters the scene. Ready... ACTION!",
+        "camera": "Keep the camera still. Make sure the whole set fits in the picture.",
+        "lights": "Keep the light steady so the picture doesn't flicker.",
+        "sound": "Point the microphone at whoever is talking. Everyone else stays quiet!",
+    },
+]
 
 
 # ---- Practice mode (free) ----
@@ -88,6 +159,25 @@ def ask_claude(history):
     return "".join(block.text for block in response.content if block.type == "text")
 
 
+def ask_claude_for_cards(history):
+    """Send the brainstorm to Claude and get back step cards (as a list)."""
+    client = anthropic.Anthropic(api_key=read_api_key())
+    response = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=16000,
+        thinking={"type": "adaptive"},
+        system=CARD_INSTRUCTIONS,
+        messages=history + [{
+            "role": "user",
+            "content": "Now turn this story into step cards for filming.",
+        }],
+        # This guarantees Claude answers in exactly the card shape we need
+        output_config={"format": {"type": "json_schema", "schema": CARD_SCHEMA}},
+    )
+    text = "".join(block.text for block in response.content if block.type == "text")
+    return json.loads(text)["cards"]
+
+
 class RequestHandler(BaseHTTPRequestHandler):
     """Answers the two things the browser asks for: the page, and Claude replies."""
 
@@ -104,12 +194,20 @@ class RequestHandler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         data = json.loads(self.rfile.read(length))
 
+        wants_cards = data.get("want") == "cards"
+
         if read_api_key() is None:
             # No key yet -> free practice mode with pretend answers
-            reply = {"text": practice_reply(data["history"])}
+            if wants_cards:
+                reply = {"cards": PRACTICE_CARDS}
+            else:
+                reply = {"text": practice_reply(data["history"])}
         else:
             try:
-                reply = {"text": ask_claude(data["history"])}
+                if wants_cards:
+                    reply = {"cards": ask_claude_for_cards(data["history"])}
+                else:
+                    reply = {"text": ask_claude(data["history"])}
             except anthropic.AuthenticationError:
                 reply = {"error": "The API key doesn't work. Check api_key.txt."}
             except anthropic.APIError as problem:
