@@ -146,12 +146,27 @@
     font-size: 2em;
     padding: 4px 10px;
   }
-  #voicePicker {
-    font-family: inherit;
-    font-size: 1em;
-    padding: 8px 12px;
+  /* The little name box that appears when you press Save */
+  #saveBar {
+    display: none;
+    gap: 10px;
+  }
+  #saveBar.open { display: flex; }
+  #saveBar input {
+    font-size: 1.1em;
+    padding: 10px 14px;
     border-radius: 10px;
-    border: none;
+    border: 3px solid #E8A03E;
+  }
+  #saveBar #saveOk { background: #E8A03E; }
+  #saveBar #saveCancel { background: #888; }
+  #cardHomeButton {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    background: transparent;
+    font-size: 1.8em;
+    padding: 4px 10px;
   }
 
   /* Home page — first thing you see: new story, or a saved movie */
@@ -229,7 +244,12 @@
     <button id="saveButton">Save 💾</button>
     <button id="nextButton">Next ▶</button>
   </div>
-  <select id="voicePicker" title="Choose the reading voice"></select>
+  <div id="saveBar">
+    <input id="movieName" placeholder="Name this movie…" autocomplete="off">
+    <button id="saveOk">Save ✔</button>
+    <button id="saveCancel">Cancel</button>
+  </div>
+  <button id="cardHomeButton" title="Home">🏠</button>
 </div>
 
 <form id="chatForm">
@@ -336,40 +356,13 @@ const cardDots = document.getElementById("cardDots");
 let cards = [];        // the cards Claude made
 let cardIndex = 0;     // which card is on screen right now
 
-// ---- Voice picker: choose which voice reads the cards ----
-const voicePicker = document.getElementById("voicePicker");
-
-function loadVoices() {
-  // List the English voices this computer has installed
-  const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith("en"));
-  if (voices.length === 0) return;
-
-  voicePicker.innerHTML = "";
-  const savedVoice = localStorage.getItem("msaVoice");
-  for (const v of voices) {
-    const option = document.createElement("option");
-    option.value = v.name;
-    option.textContent = "🗣️ " + v.name;
-    if (v.name === savedVoice) option.selected = true;
-    voicePicker.appendChild(option);
-  }
-}
-loadVoices();
-speechSynthesis.addEventListener("voiceschanged", loadVoices);
-
-voicePicker.addEventListener("change", () => {
-  // Remember the choice, and say a hello so you can hear it right away
-  localStorage.setItem("msaVoice", voicePicker.value);
-  readAloud("Hi! I will read the cards!");
-});
-
 function readAloud(text) {
-  // The browser's built-in voice reads the card out loud (from SPEC.md)
+  // Aaron reads the cards out loud (the studio's official narrator)
   speechSynthesis.cancel();
   const speech = new SpeechSynthesisUtterance(text);
   speech.rate = 0.95;
-  const chosen = speechSynthesis.getVoices().find(v => v.name === voicePicker.value);
-  if (chosen) speech.voice = chosen;
+  const aaron = speechSynthesis.getVoices().find(v => v.name === "Aaron");
+  if (aaron) speech.voice = aaron;
   speechSynthesis.speak(speech);
 }
 
@@ -461,12 +454,16 @@ function showHomePage() {
     trash.className = "deleteMovie";
     trash.textContent = "🗑️";
     trash.title = "Delete " + movie.name;
+    // First tap asks "Sure?", second tap really deletes
     trash.addEventListener("click", () => {
-      if (confirm('Delete "' + movie.name + '"? This cannot be undone.')) {
-        localStorage.setItem("msaMovies",
-          JSON.stringify(loadMovies().filter(m => m.name !== movie.name)));
-        showHomePage();
+      if (trash.textContent !== "Sure?") {
+        trash.textContent = "Sure?";
+        setTimeout(() => { trash.textContent = "🗑️"; }, 3000);
+        return;
       }
+      localStorage.setItem("msaMovies",
+        JSON.stringify(loadMovies().filter(m => m.name !== movie.name)));
+      showHomePage();
     });
 
     row.append(open, trash);
@@ -482,15 +479,40 @@ document.getElementById("newStoryButton").addEventListener("click", () => {
 
 document.getElementById("homeButton").addEventListener("click", showHomePage);
 
-document.getElementById("saveButton").addEventListener("click", () => {
-  const name = prompt("Name this movie:", "");
-  if (!name || !name.trim()) return;
+// Press Save -> a name box appears right on the card screen
+const saveBar = document.getElementById("saveBar");
+const movieNameInput = document.getElementById("movieName");
+const saveButton = document.getElementById("saveButton");
+
+saveButton.addEventListener("click", () => {
+  saveBar.classList.add("open");
+  movieNameInput.focus();
+});
+
+document.getElementById("saveCancel").addEventListener("click", () => {
+  saveBar.classList.remove("open");
+});
+
+document.getElementById("saveOk").addEventListener("click", () => {
+  const name = movieNameInput.value.trim();
+  if (!name) { movieNameInput.focus(); return; }
 
   // Same name = replace the old version
-  const movies = loadMovies().filter(m => m.name !== name.trim());
-  movies.push({ name: name.trim(), cards: cards });
+  const movies = loadMovies().filter(m => m.name !== name);
+  movies.push({ name: name, cards: cards });
   localStorage.setItem("msaMovies", JSON.stringify(movies));
-  alert('Saved! 🎬 "' + name.trim() + '" is now on the home page.');
+
+  saveBar.classList.remove("open");
+  movieNameInput.value = "";
+  saveButton.textContent = "Saved ✔";           // quick thumbs-up
+  setTimeout(() => { saveButton.textContent = "Save 💾"; }, 2000);
+});
+
+// Home button on the card screen: back to the home page
+document.getElementById("cardHomeButton").addEventListener("click", () => {
+  speechSynthesis.cancel();
+  cardMode.classList.remove("open");
+  showHomePage();
 });
 
 showHomePage();
