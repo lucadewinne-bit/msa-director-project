@@ -17,10 +17,10 @@ Submitting July 15–16 (not the deadline day) is the target.
 | AI Fluency course             | ✅ DONE     | completed July 4 — save proof of completion for the certificate doc |
 | Claude 101 course             | NOT STARTED |       |
 | Certificates combined (1 doc) | NOT STARTED |       |
-| GitHub account + repo         | NOT STARTED |       |
-| Phase 1: research + spec      | NOT STARTED |       |
+| GitHub account + repo         | ✅ DONE     | public repo: github.com/lucadewinne-bit/msa-director-project |
+| Phase 1: research + spec      | ✅ DONE     | SPEC.md written and committed — the source of truth |
 | Staff discovery conversation  | NOT STARTED | ask staff for 15 min EARLY this week |
-| Phase 2: build V1             | NOT STARTED |       |
+| Phase 2: build V1             | IN PROGRESS | walking skeleton built (app/server.py + app/index.html); needs API key to go live |
 | Test with kids/staff at MSA   | NOT STARTED | schedule the session by Day 3 |
 | Staff runbook (1 page)        | NOT STARTED |       |
 | Essay 1: community impact     | NOT STARTED |       |

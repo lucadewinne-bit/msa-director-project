@@ -1,0 +1,6 @@
+# Never upload the secret API key to GitHub
+api_key.txt
+
+# Computer-generated junk files
+__pycache__/
+.DS_Store

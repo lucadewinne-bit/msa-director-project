@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MSA Script Builder — Skeleton</title>
+<style>
+  /* Big, friendly, readable — dyslexia- and kid-friendly per SPEC.md */
+  body {
+    font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
+    background: #FFF8E7;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    background: #FF8C42;
+    color: white;
+    padding: 16px 24px;
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bubble {
+    max-width: 75%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 1.2em;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .staff { background: #4E89AE; color: white; align-self: flex-end; }
+  .claude { background: white; border: 3px solid #FF8C42; align-self: flex-start; }
+  .error { background: #FFD6D6; border: 3px solid #D64545; align-self: center; }
+  form {
+    display: flex;
+    gap: 10px;
+    padding: 16px 24px;
+    background: #FFEFD0;
+  }
+  input {
+    flex: 1;
+    font-size: 1.2em;
+    padding: 14px;
+    border-radius: 12px;
+    border: 3px solid #FF8C42;
+  }
+  button {
+    font-size: 1.2em;
+    padding: 14px 26px;
+    border-radius: 12px;
+    border: none;
+    background: #FF8C42;
+    color: white;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<header>🎬 MSA Script Builder — walking skeleton</header>
+
+<div id="messages">
+  <div class="bubble claude">Hi! I'm the story brainstorm partner.
+Type a kid's movie idea to get started — for example: "a dragon who is scared of fire".</div>
+</div>
+
+<form id="chatForm">
+  <input id="chatInput" placeholder="Type here, then press Send…" autocomplete="off">
+  <button id="sendButton">Send 🎥</button>
+</form>
+
+<script>
+// The whole conversation lives here, in the page (per SPEC.md:
+// nothing about children is stored anywhere).
+const history = [];
+
+const messagesBox = document.getElementById("messages");
+const form = document.getElementById("chatForm");
+const input = document.getElementById("chatInput");
+const button = document.getElementById("sendButton");
+
+function showBubble(text, who) {
+  const bubble = document.createElement("div");
+  bubble.className = "bubble " + who;
+  bubble.textContent = text;
+  messagesBox.appendChild(bubble);
+  messagesBox.scrollTop = messagesBox.scrollHeight;
+  return bubble;
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();                 // don't reload the page
+  const text = input.value.trim();
+  if (!text) return;
+
+  showBubble(text, "staff");
+  history.push({ role: "user", content: text });
+  input.value = "";
+  button.disabled = true;
+  const waiting = showBubble("🎬 Thinking…", "claude");
+
+  try {
+    // Send the whole conversation to our little server (server.py)
+    const response = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: history }),
+    });
+    const reply = await response.json();
+
+    if (reply.error) {
+      waiting.remove();
+      showBubble("⚠️ " + reply.error, "error");
+    } else {
+      waiting.textContent = reply.text;
+      history.push({ role: "assistant", content: reply.text });
+    }
+  } catch {
+    waiting.remove();
+    showBubble("⚠️ Couldn't reach the server. Is server.py still running?", "error");
+  }
+
+  button.disabled = false;
+  input.focus();
+});
+</script>
+
+</body>
+</html>
