@@ -41,6 +41,28 @@ Rules you must always follow:
 """
 
 
+# ---- Practice mode (free) ----
+# Used when there is no API key yet. The app answers with pretend
+# questions so we can build and test every screen without paying.
+# The moment a real key is in api_key.txt, real Claude takes over.
+PRACTICE_REPLIES = [
+    "Ooh, I love it! 🎬 Every great movie starts with a hero.\nWho is the main character of this story?",
+    "Great choice, director! 🌟\nWhere does the story happen? A castle? A school? Outer space?",
+    "Wonderful! Now the exciting part...\nWhat goes WRONG? Every good story has a problem to solve!",
+    "Oh no! 😱 That's a great problem.\nHow does our hero try to fix it? What's their big plan?",
+    "Amazing! And here's my last big question...\nHow does the story END? Happy? Funny? A surprise?",
+    "🎉 That's a whole story! When the REAL Claude is connected, "
+    "I'll help you turn this into a script. For now: CUT! Great practicing!",
+]
+
+
+def practice_reply(history):
+    """Pick the next pretend reply, based on how far the conversation is."""
+    turns = sum(1 for message in history if message["role"] == "user")
+    reply = PRACTICE_REPLIES[min(turns - 1, len(PRACTICE_REPLIES) - 1)]
+    return "🎭 PRACTICE MODE (free, not real Claude)\n\n" + reply
+
+
 def read_api_key():
     """Read the secret key from api_key.txt. Returns None if it's not set up yet."""
     try:
@@ -83,10 +105,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         data = json.loads(self.rfile.read(length))
 
         if read_api_key() is None:
-            reply = {
-                "error": "No API key yet. Open api_key.txt in the project "
-                         "folder and paste your key from console.anthropic.com."
-            }
+            # No key yet -> free practice mode with pretend answers
+            reply = {"text": practice_reply(data["history"])}
         else:
             try:
                 reply = {"text": ask_claude(data["history"])}
