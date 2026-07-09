@@ -71,6 +71,30 @@
   button:disabled { opacity: 0.5; }
   #cardsButton { background: #4E9F3D; }
 
+  /* When the story is ready, the Step cards button glows to say "press me!" */
+  #cardsButton.ready {
+    animation: glow 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    from { box-shadow: 0 0 4px #4E9F3D; transform: scale(1); }
+    to   { box-shadow: 0 0 22px #4E9F3D; transform: scale(1.06); }
+  }
+  .bigNext {
+    background: #EAF7E4;
+    border: 3px solid #4E9F3D;
+    border-radius: 18px;
+    padding: 18px;
+    align-self: center;
+    text-align: center;
+    font-size: 1.25em;
+  }
+  .bigNext button {
+    display: block;
+    margin: 12px auto 0 auto;
+    background: #4E9F3D;
+    font-size: 1.2em;
+  }
+
   /* Card mode — full screen, one card at a time, like slides */
   #cardMode {
     position: fixed;
@@ -199,6 +223,13 @@ form.addEventListener("submit", async (event) => {
     if (reply.error) {
       waiting.remove();
       showBubble("⚠️ " + reply.error, "error");
+    } else if (reply.text.includes("[STORY READY]")) {
+      // The story is complete! Show the reply without the secret marker,
+      // then make "Step cards" the big obvious next step.
+      const cleanText = reply.text.replace("[STORY READY]", "").trim();
+      waiting.textContent = cleanText;
+      history.push({ role: "assistant", content: cleanText });
+      showStoryReady();
     } else {
       waiting.textContent = reply.text;
       history.push({ role: "assistant", content: reply.text });
@@ -211,6 +242,27 @@ form.addEventListener("submit", async (event) => {
   button.disabled = false;
   input.focus();
 });
+
+// When the story is complete: a big invitation + a glowing button,
+// so the next step is impossible to miss.
+function showStoryReady() {
+  const invite = document.createElement("div");
+  invite.className = "bigNext";
+  invite.textContent = "🎉 Your story is ready, director! Next step:";
+
+  const go = document.createElement("button");
+  go.textContent = "Make my step cards 🗂️";
+  go.addEventListener("click", () => {
+    invite.remove();
+    cardsButton.click();
+  });
+
+  invite.appendChild(go);
+  messagesBox.appendChild(invite);
+  messagesBox.scrollTop = messagesBox.scrollHeight;
+
+  cardsButton.classList.add("ready");   // make the bottom button glow too
+}
 
 // The "Step cards" button: turn the brainstormed story into filming cards,
 // then show them full screen, one at a time, like slides.
@@ -296,6 +348,7 @@ function showCurrentCard() {
 function openCardMode() {
   cardIndex = 0;
   cardMode.classList.add("open");
+  cardsButton.classList.remove("ready");   // job done — stop glowing
   showCurrentCard();
 }
 

@@ -40,6 +40,11 @@ Rules you must always follow:
   If any appear, gently remind staff: "describe the story, not the kids."
 - Plain text only. Never use markdown symbols like ** or # — they show up
   as ugly stars on screen.
+- When the story feels complete (hero, place, problem, solution, and ending
+  are all decided), retell the full story in a short summary, congratulate
+  the director, and end your message with this exact text on its own line:
+  [STORY READY]
+  Don't use that marker before the story is truly complete.
 """
 
 # ---- Step cards (SPEC.md phase 3) ----
