@@ -69,3 +69,19 @@ interview and sound exactly like himself.
 - **What would change my mind:** If MSA staff testing shows the setup tips are
   ignored or too generic, simplify back to story-only cards.
 - **Outcome:** _pending_ — test with staff at MSA
+
+---
+
+**#3 — Added saving step cards + a home page** · 2026-07-08
+- **Decision:** Step cards can be saved with a movie name and reopened from a
+  home page. Saved on that computer's browser only — no accounts, no cloud.
+- **Options considered:** Keep V1 with nothing saved (what the spec planned);
+  save to a server (rejected: adds accounts and privacy risk for zero V1 gain).
+- **Why:** The spec parked "saving libraries of past scripts" as a nice-to-have
+  IF the build went fast — and it did. Staff need this in practice: a filming
+  session spans days, and losing the cards between sessions would make the tool
+  annoying. The spec's condition is met: saved cards contain only the story,
+  never anything about kids.
+- **What would change my mind:** If saving confuses staff during testing, or
+  anything child-identifying ever ends up in cards, remove it.
+- **Outcome:** _pending_

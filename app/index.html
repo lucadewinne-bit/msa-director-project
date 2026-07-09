@@ -153,11 +153,65 @@
     border-radius: 10px;
     border: none;
   }
+
+  /* Home page — first thing you see: new story, or a saved movie */
+  #homePage {
+    position: fixed;
+    inset: 0;
+    background: #FFF8E7;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 24px;
+    z-index: 20;
+  }
+  #homePage.open { display: flex; }
+  #homePage h1 { font-size: 2.2em; margin: 0; }
+  #newStoryButton { font-size: 1.5em; padding: 20px 40px; }
+  #savedList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+  .savedMovie {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .savedMovie .openMovie {
+    flex: 1;
+    background: white;
+    color: #333;
+    border: 3px solid #4E89AE;
+    text-align: left;
+  }
+  .savedMovie .deleteMovie { background: #D64545; }
+  #homeButton {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    background: transparent;
+    font-size: 1.4em;
+  }
+  #saveButton { background: #E8A03E; }
 </style>
 </head>
 <body>
 
-<header>🎬 Script Builder</header>
+<header>🎬 Script Builder <button id="homeButton" title="Home">🏠</button></header>
+
+<!-- Home page: start a new story, or open a saved movie's step cards -->
+<div id="homePage" class="open">
+  <h1>🎬 Script Builder</h1>
+  <button id="newStoryButton">New story ▶</button>
+  <div id="savedList"></div>
+</div>
 <div id="staffReminder">🛡️ Staff reminder: describe the story, not the kids — no names, ages, or schools.</div>
 
 <div id="messages">
@@ -172,6 +226,7 @@
   <div id="cardButtons">
     <button id="backButton">◀ Back</button>
     <button id="hearButton">Hear it 🔊</button>
+    <button id="saveButton">Save 💾</button>
     <button id="nextButton">Next ▶</button>
   </div>
   <select id="voicePicker" title="Choose the reading voice"></select>
@@ -374,6 +429,71 @@ document.getElementById("exitButton").addEventListener("click", () => {
   speechSynthesis.cancel();
   cardMode.classList.remove("open");
 });
+
+// ---- Home page + saving movies ----
+// Saved movies live in this browser's own memory, on this computer only.
+// They contain the story cards — never anything about the kids.
+const homePage = document.getElementById("homePage");
+
+function loadMovies() {
+  return JSON.parse(localStorage.getItem("msaMovies") || "[]");
+}
+
+function showHomePage() {
+  const listBox = document.getElementById("savedList");
+  listBox.innerHTML = "";
+
+  for (const movie of loadMovies()) {
+    const row = document.createElement("div");
+    row.className = "savedMovie";
+
+    const open = document.createElement("button");
+    open.className = "openMovie";
+    open.textContent = "🎞️ " + movie.name;
+    open.addEventListener("click", () => {
+      homePage.classList.remove("open");
+      cards = movie.cards;
+      storyReady = true;
+      openCardMode();
+    });
+
+    const trash = document.createElement("button");
+    trash.className = "deleteMovie";
+    trash.textContent = "🗑️";
+    trash.title = "Delete " + movie.name;
+    trash.addEventListener("click", () => {
+      if (confirm('Delete "' + movie.name + '"? This cannot be undone.')) {
+        localStorage.setItem("msaMovies",
+          JSON.stringify(loadMovies().filter(m => m.name !== movie.name)));
+        showHomePage();
+      }
+    });
+
+    row.append(open, trash);
+    listBox.appendChild(row);
+  }
+  homePage.classList.add("open");
+}
+
+document.getElementById("newStoryButton").addEventListener("click", () => {
+  homePage.classList.remove("open");
+  input.focus();
+});
+
+document.getElementById("homeButton").addEventListener("click", showHomePage);
+
+document.getElementById("saveButton").addEventListener("click", () => {
+  const name = prompt("Name this movie:", "");
+  if (!name || !name.trim()) return;
+
+  // Same name = replace the old version
+  const movies = loadMovies().filter(m => m.name !== name.trim());
+  movies.push({ name: name.trim(), cards: cards });
+  localStorage.setItem("msaMovies", JSON.stringify(movies));
+  alert('Saved! 🎬 "' + name.trim() + '" is now on the home page.');
+});
+
+showHomePage();
 
 cardsButton.addEventListener("click", async () => {
   if (!storyReady) {
