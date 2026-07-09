@@ -112,6 +112,13 @@
     font-size: 2em;
     padding: 4px 10px;
   }
+  #voicePicker {
+    font-family: inherit;
+    font-size: 1em;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: none;
+  }
 </style>
 </head>
 <body>
@@ -133,6 +140,7 @@ Type a kid's movie idea to get started — for example: "a dragon who is scared 
     <button id="hearButton">Hear it 🔊</button>
     <button id="nextButton">Next ▶</button>
   </div>
+  <select id="voicePicker" title="Choose the reading voice"></select>
 </div>
 
 <form id="chatForm">
@@ -206,12 +214,41 @@ const cardDots = document.getElementById("cardDots");
 let cards = [];        // the cards Claude made
 let cardIndex = 0;     // which card is on screen right now
 
+// ---- Voice picker: choose which voice reads the cards ----
+const voicePicker = document.getElementById("voicePicker");
+
+function loadVoices() {
+  // List the English voices this computer has installed
+  const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith("en"));
+  if (voices.length === 0) return;
+
+  voicePicker.innerHTML = "";
+  const savedVoice = localStorage.getItem("msaVoice");
+  for (const v of voices) {
+    const option = document.createElement("option");
+    option.value = v.name;
+    option.textContent = "🗣️ " + v.name;
+    if (v.name === savedVoice) option.selected = true;
+    voicePicker.appendChild(option);
+  }
+}
+loadVoices();
+speechSynthesis.addEventListener("voiceschanged", loadVoices);
+
+voicePicker.addEventListener("change", () => {
+  // Remember the choice, and say a hello so you can hear it right away
+  localStorage.setItem("msaVoice", voicePicker.value);
+  readAloud("Hi! I will read the cards!");
+});
+
 function readAloud(text) {
   // The browser's built-in voice reads the card out loud (from SPEC.md)
   speechSynthesis.cancel();
-  const voice = new SpeechSynthesisUtterance(text);
-  voice.rate = 0.95;
-  speechSynthesis.speak(voice);
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.rate = 0.95;
+  const chosen = speechSynthesis.getVoices().find(v => v.name === voicePicker.value);
+  if (chosen) speech.voice = chosen;
+  speechSynthesis.speak(speech);
 }
 
 function showCurrentCard() {
