@@ -104,3 +104,22 @@ interview and sound exactly like himself.
 - **What would change my mind:** If the PUMA-shaped cards confuse kids or
   staff in testing, drop back to the plain scene list.
 - **Outcome:** _pending_
+
+---
+
+**#5 — Staff curation screen with a Stash (not a trash)** · 2026-07-09
+- **Decision:** Cards no longer go straight to the kids. Staff first see a
+  check screen: fix any words by typing on the card, and skip cards into a
+  Stash — parked, never deleted, one tap brings them back. Only kept cards
+  reach kid mode. A ✏️ on the kid screen returns to checking.
+- **Options considered:** Cards straight to kids (what we had); a delete
+  button instead of a stash.
+- **Why:** Two reasons lined up. My SPEC always said staff curate cards
+  before kids see them (safety rule: staff-mediated). And market research
+  on proven tools showed the exact pattern that works: Arc Studio's "Stash"
+  is loved because cutting never feels destructive, and Sudowrite's
+  use-or-discard flow keeps the human in charge of the AI. Evidence and
+  spec agreed, so this jumped the queue.
+- **What would change my mind:** If staff skip the checking step in real
+  sessions, make it faster or optional.
+- **Outcome:** _pending_ — watch staff use it at MSA
