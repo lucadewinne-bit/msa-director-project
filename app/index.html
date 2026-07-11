@@ -370,15 +370,29 @@
     color: var(--ink);
   }
   .curateCard textarea:focus { outline: 1px solid var(--clay); }
-  .curateCard .setupSmall {
-    font-size: 0.92em;
-    color: var(--slate);
+  .curateCard .setupEditBox {
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: 10px 12px;
     margin-top: 10px;
-    white-space: pre-wrap;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .setupRow { display: flex; gap: 8px; align-items: flex-start; }
+  .setupRow .lbl {
+    font-size: 0.92em;
+    color: var(--slate);
+    white-space: nowrap;
+    padding-top: 7px;
+    width: 96px;
+  }
+  .setupRow textarea {
+    flex: 1;
+    min-height: 34px;
+    font-size: 0.95em;
+    padding: 6px 8px;
   }
   .curateCard .skipButton {
     background: transparent;
@@ -700,10 +714,27 @@ function makeCurateRow(card) {
   sayBox.value = card.say;
   sayBox.addEventListener("input", () => { card.say = sayBox.value; });
 
+  // The four setup tips — each one editable, just like the story text
   const setup = document.createElement("div");
-  setup.className = "setupSmall";
-  setup.textContent =
-    "🎥 " + card.camera + "\n💡 " + card.lights + "\n🎤 " + card.sound + "\n✂️ " + card.edit;
+  setup.className = "setupEditBox";
+  const tips = [
+    ["🎥 Camera", "camera"],
+    ["💡 Lights", "lights"],
+    ["🎤 Sound", "sound"],
+    ["✂️ CapCut", "edit"],
+  ];
+  for (const [label, field] of tips) {
+    const tipRow = document.createElement("div");
+    tipRow.className = "setupRow";
+    const lbl = document.createElement("span");
+    lbl.className = "lbl";
+    lbl.textContent = label;
+    const box = document.createElement("textarea");
+    box.value = card[field];
+    box.addEventListener("input", () => { card[field] = box.value; });
+    tipRow.append(lbl, box);
+    setup.appendChild(tipRow);
+  }
 
   const skip = document.createElement("button");
   skip.className = "skipButton";
