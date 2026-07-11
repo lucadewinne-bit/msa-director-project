@@ -4,105 +4,140 @@
 <meta charset="utf-8">
 <title>Script Builder</title>
 <style>
-  /* Big, friendly, readable — dyslexia- and kid-friendly per SPEC.md */
+  /* ============================================================
+     Design inspired by anthropic.com: warm cream paper, ink text,
+     serif headlines, terracotta accent. Still big and readable
+     for kids and dyslexic readers (SPEC.md).
+     ============================================================ */
+  :root {
+    --paper: #F0EEE6;      /* cream page background */
+    --ivory: #FAF9F5;      /* card surfaces */
+    --ink:   #191919;      /* main text */
+    --slate: #5E5D59;      /* quiet text */
+    --clay:  #CC785C;      /* terracotta accent — buttons */
+    --clay-dark: #A85B41;  /* button hover */
+    --kraft: #D4A27F;      /* warm secondary */
+    --line:  #DFDACD;      /* hairline borders */
+    --stage: #1F1E1D;      /* dark backdrop for kid slide mode */
+  }
+  * { box-sizing: border-box; }
   body {
-    font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
-    background: #FFF8E7;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
     margin: 0;
     display: flex;
     flex-direction: column;
     height: 100vh;
   }
+  header, h1, h2, h3, #bigCard h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
   header {
-    background: #FF8C42;
-    color: white;
-    padding: 16px 24px;
+    background: var(--ivory);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 28px;
     font-size: 1.5em;
-    font-weight: bold;
   }
   #staffReminder {
-    background: #FFF3C4;
-    border-bottom: 2px solid #E8C547;
-    padding: 8px 24px;
-    font-size: 1em;
-    color: #6B5900;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 28px;
+    font-size: 0.95em;
+    color: var(--slate);
   }
   #messages {
     flex: 1;
     overflow-y: auto;
-    padding: 24px;
+    padding: 28px;
     display: flex;
     flex-direction: column;
     gap: 14px;
   }
   .bubble {
-    max-width: 75%;
-    padding: 14px 18px;
-    border-radius: 18px;
-    font-size: 1.2em;
-    line-height: 1.5;
+    max-width: 72%;
+    padding: 14px 20px;
+    border-radius: 16px;
+    font-size: 1.15em;
+    line-height: 1.55;
     white-space: pre-wrap;
   }
-  .staff { background: #4E89AE; color: white; align-self: flex-end; }
-  .claude { background: white; border: 3px solid #FF8C42; align-self: flex-start; }
-  .error { background: #FFD6D6; border: 3px solid #D64545; align-self: center; }
+  .staff { background: var(--ink); color: var(--ivory); align-self: flex-end; }
+  .claude { background: var(--ivory); border: 1px solid var(--line); align-self: flex-start; }
+  .error {
+    background: #F5E3DD;
+    border: 1px solid var(--clay);
+    color: var(--ink);
+    align-self: center;
+  }
   form {
     display: flex;
     gap: 10px;
-    padding: 16px 24px;
-    background: #FFEFD0;
+    padding: 16px 28px 20px 28px;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
   }
   input {
     flex: 1;
-    font-size: 1.2em;
-    padding: 14px;
-    border-radius: 12px;
-    border: 3px solid #FF8C42;
+    font-family: inherit;
+    font-size: 1.15em;
+    padding: 14px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--ivory);
+    color: var(--ink);
   }
+  input:focus { outline: 2px solid var(--clay); border-color: var(--clay); }
   button {
-    font-size: 1.2em;
-    padding: 14px 26px;
-    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1.1em;
+    padding: 13px 24px;
+    border-radius: 999px;
     border: none;
-    background: #FF8C42;
-    color: white;
+    background: var(--clay);
+    color: var(--ivory);
     cursor: pointer;
   }
-  button:disabled { opacity: 0.5; }
-  #cardsButton { background: #4E9F3D; }
+  button:hover { background: var(--clay-dark); }
+  button:disabled { opacity: 0.45; }
+  #cardsButton { background: var(--ink); }
+  #cardsButton:hover { background: #000; }
 
   /* Step cards button sleeps (dim) until the story is complete */
-  #cardsButton.waiting { opacity: 0.45; }
+  #cardsButton.waiting { opacity: 0.4; }
 
   /* When the story is ready, the Step cards button glows to say "press me!" */
   #cardsButton.ready {
+    background: var(--clay);
     animation: glow 1.2s ease-in-out infinite alternate;
   }
   @keyframes glow {
-    from { box-shadow: 0 0 4px #4E9F3D; transform: scale(1); }
-    to   { box-shadow: 0 0 22px #4E9F3D; transform: scale(1.06); }
+    from { box-shadow: 0 0 4px rgba(204,120,92,0.6); transform: scale(1); }
+    to   { box-shadow: 0 0 22px rgba(204,120,92,0.9); transform: scale(1.05); }
   }
   .bigNext {
-    background: #EAF7E4;
-    border: 3px solid #4E9F3D;
-    border-radius: 18px;
-    padding: 18px;
+    background: var(--ivory);
+    border: 1px solid var(--clay);
+    border-radius: 16px;
+    padding: 20px 26px;
     align-self: center;
     text-align: center;
-    font-size: 1.25em;
+    font-size: 1.2em;
   }
   .bigNext button {
     display: block;
-    margin: 12px auto 0 auto;
-    background: #4E9F3D;
-    font-size: 1.2em;
+    margin: 14px auto 0 auto;
+    font-size: 1.15em;
   }
 
   /* Card mode — full screen, one card at a time, like slides */
   #cardMode {
     position: fixed;
     inset: 0;
-    background: #2B4162;
+    background: var(--stage);
     display: none;
     flex-direction: column;
     align-items: center;
@@ -112,40 +147,44 @@
     z-index: 10;
   }
   #cardMode.open { display: flex; }
-  #cardDots { color: white; font-size: 1.4em; letter-spacing: 6px; }
+  #cardDots { color: var(--kraft); font-size: 1.3em; letter-spacing: 7px; }
   #bigCard {
-    background: white;
-    border-radius: 24px;
-    padding: 28px 32px;
+    background: var(--ivory);
+    border-radius: 18px;
+    padding: 30px 36px;
     max-width: 640px;
     width: 90%;
     max-height: 65vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
   }
   #bigCard .emoji { font-size: 3.5em; text-align: center; }
-  #bigCard h2 { font-size: 1.8em; margin: 8px 0; text-align: center; }
-  #bigCard .say { font-size: 1.35em; line-height: 1.5; margin-bottom: 16px; }
+  #bigCard h2 { font-size: 1.9em; margin: 10px 0; text-align: center; }
+  #bigCard .say { font-size: 1.3em; line-height: 1.55; margin-bottom: 16px; }
   #bigCard .setup {
-    background: #EEF7EA;
-    border-radius: 14px;
-    padding: 12px 16px;
-    font-size: 1.05em;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 1em;
     line-height: 1.8;
     white-space: pre-wrap;
   }
-  #cardButtons { display: flex; gap: 14px; }
-  #cardButtons button { font-size: 1.3em; padding: 16px 28px; }
-  #backButton, #nextButton { background: #4E9F3D; }
-  #hearButton { background: #4E89AE; }
+  #cardButtons { display: flex; gap: 12px; }
+  #cardButtons button { font-size: 1.2em; padding: 15px 26px; }
+  #backButton, #nextButton { background: var(--clay); }
+  #hearButton { background: transparent; border: 1px solid var(--kraft); color: var(--ivory); }
+  #hearButton:hover { background: rgba(212,162,127,0.15); }
   #exitButton {
     position: absolute;
     top: 16px;
     right: 20px;
     background: transparent;
-    font-size: 2em;
+    color: var(--ivory);
+    font-size: 1.8em;
     padding: 4px 10px;
   }
+  #exitButton:hover, #cardHomeButton:hover, #editCardsButton:hover { background: rgba(255,255,255,0.08); }
   /* The little name box that appears when you press Save */
   #saveBar {
     display: none;
@@ -153,19 +192,18 @@
   }
   #saveBar.open { display: flex; }
   #saveBar input {
-    font-size: 1.1em;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 3px solid #E8A03E;
+    font-size: 1.05em;
+    padding: 10px 16px;
+    border: 1px solid var(--kraft);
   }
-  #saveBar #saveOk { background: #E8A03E; }
-  #saveBar #saveCancel { background: #888; }
+  #saveBar #saveOk { background: var(--kraft); color: var(--ink); }
+  #saveBar #saveCancel { background: transparent; border: 1px solid var(--slate); color: var(--ivory); }
   #cardHomeButton {
     position: absolute;
     top: 16px;
     left: 20px;
     background: transparent;
-    font-size: 1.8em;
+    font-size: 1.7em;
     padding: 4px 10px;
   }
   #editCardsButton {
@@ -173,29 +211,29 @@
     top: 16px;
     left: 70px;
     background: transparent;
-    font-size: 1.8em;
+    font-size: 1.7em;
     padding: 4px 10px;
   }
 
-  /* Home page — like the Google Slides home: start-new gallery on top,
-     your saved movies as preview cards below */
+  /* Home page — start-new gallery on top, saved movies below */
   #homePage {
     position: fixed;
     inset: 0;
-    background: white;
+    background: var(--ivory);
     display: none;
     overflow-y: auto;
     z-index: 20;
   }
   #homePage.open { display: block; }
   .homeTop {
-    background: #F4F0E6;
-    padding: 24px 32px 32px 32px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 28px 36px 36px 36px;
   }
   .homeTop h2, .homeBottom h2 {
-    font-size: 1.3em;
-    margin: 0 0 16px 0;
-    color: #333;
+    font-size: 1.5em;
+    margin: 0 0 18px 0;
+    color: var(--ink);
   }
   .templateRow {
     display: flex;
@@ -204,22 +242,23 @@
   }
   .template { width: 180px; cursor: pointer; }
   .template .thumb {
-    background: white;
-    border: 1px solid #d0d0d0;
-    border-radius: 6px;
+    background: var(--ivory);
+    border: 1px solid var(--line);
+    border-radius: 10px;
     height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 3em;
+    transition: border-color 0.15s;
   }
-  .template:hover .thumb { border: 2px solid #FF8C42; }
+  .template:hover .thumb { border: 2px solid var(--clay); }
   .template .label {
     font-size: 1em;
-    margin-top: 8px;
-    color: #333;
+    margin-top: 10px;
+    color: var(--ink);
   }
-  .homeBottom { padding: 24px 32px; }
+  .homeBottom { padding: 28px 36px; }
   #movieGrid {
     display: flex;
     gap: 20px;
@@ -227,24 +266,24 @@
   }
   .movieCard {
     width: 200px;
-    border: 1px solid #d0d0d0;
-    border-radius: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
-    background: white;
+    background: var(--ivory);
   }
-  .movieCard:hover { outline: 2px solid #FF8C42; }
+  .movieCard:hover { outline: 2px solid var(--clay); }
   .movieCard .preview {
     height: 120px;
-    background: #FFF8E7;
+    background: var(--paper);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 3.2em;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--line);
   }
   .movieCard .meta {
-    padding: 10px 12px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -253,105 +292,136 @@
   .movieCard .titleBox { flex: 1; min-width: 0; }
   .movieCard .movieTitle {
     font-size: 1em;
-    color: #333;
+    color: var(--ink);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .movieCard .deleteMovie { flex-shrink: 0; }
-  .movieCard .steps { font-size: 0.85em; color: #888; }
+  .movieCard .steps { font-size: 0.85em; color: var(--slate); }
   .movieCard .deleteMovie {
+    flex-shrink: 0;
     background: transparent;
-    color: #888;
+    color: var(--slate);
     font-size: 1em;
     padding: 4px 6px;
   }
-  .noMovies { color: #888; font-size: 1.1em; }
+  .movieCard .deleteMovie:hover { background: var(--paper); }
+  .noMovies { color: var(--slate); font-size: 1.1em; }
 
   /* Curation screen — staff check the cards before the kids see them */
   #curateMode {
     position: fixed;
     inset: 0;
-    background: #FFF8E7;
+    background: var(--paper);
     display: none;
     flex-direction: column;
     z-index: 15;
   }
   #curateMode.open { display: flex; }
-  #curateScroll { flex: 1; overflow-y: auto; padding: 20px 24px 120px 24px; }
+  #curateScroll { flex: 1; overflow-y: auto; padding: 22px 28px 130px 28px; }
   #curateHint {
-    background: #FFF3C4;
-    border: 2px solid #E8C547;
-    border-radius: 12px;
-    padding: 10px 16px;
-    margin-bottom: 16px;
-    font-size: 1.05em;
+    background: var(--ivory);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--clay);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 18px;
+    font-size: 1.02em;
+    color: var(--slate);
   }
   .curateCard {
-    background: white;
-    border: 3px solid #4E9F3D;
-    border-radius: 14px;
-    padding: 14px;
+    background: var(--ivory);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--clay);
+    border-radius: 12px;
+    padding: 16px;
     margin-bottom: 14px;
   }
-  .curateCard.stashed { border-color: #bbb; opacity: 0.6; background: #f4f4f4; }
+  .curateCard.stashed {
+    border-left-color: var(--line);
+    opacity: 0.55;
+    background: var(--paper);
+  }
   .curateTop { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
   .curateTop .emoji { font-size: 1.8em; }
   .curateTop input {
     flex: 1;
-    font-family: inherit;
-    font-size: 1.15em;
-    font-weight: bold;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.2em;
+    font-weight: 600;
     border: none;
-    border-bottom: 2px dashed #ccc;
+    border-bottom: 1px dashed var(--kraft);
+    border-radius: 0;
     background: transparent;
     padding: 4px;
   }
+  .curateTop input:focus { outline: none; border-bottom: 1px solid var(--clay); }
   .curateCard textarea {
     width: 100%;
-    box-sizing: border-box;
     font-family: inherit;
     font-size: 1.05em;
-    line-height: 1.4;
-    border: 2px dashed #ccc;
+    line-height: 1.5;
+    border: 1px dashed var(--kraft);
     border-radius: 8px;
-    padding: 8px;
+    padding: 10px;
     resize: vertical;
     min-height: 60px;
     background: transparent;
+    color: var(--ink);
   }
+  .curateCard textarea:focus { outline: 1px solid var(--clay); }
   .curateCard .setupSmall {
-    font-size: 0.9em;
-    color: #666;
-    background: #EEF7EA;
+    font-size: 0.92em;
+    color: var(--slate);
+    background: var(--paper);
+    border: 1px solid var(--line);
     border-radius: 8px;
-    padding: 8px 10px;
-    margin-top: 8px;
+    padding: 10px 12px;
+    margin-top: 10px;
     white-space: pre-wrap;
   }
-  .curateCard .skipButton { background: #888; margin-top: 8px; font-size: 1em; }
-  .curateCard.stashed .skipButton { background: #4E89AE; }
-  #stashTitle { color: #666; margin: 20px 0 10px 0; }
+  .curateCard .skipButton {
+    background: transparent;
+    border: 1px solid var(--slate);
+    color: var(--slate);
+    margin-top: 10px;
+    font-size: 0.95em;
+    padding: 8px 18px;
+  }
+  .curateCard .skipButton:hover { background: var(--paper); }
+  .curateCard.stashed .skipButton {
+    border-color: var(--clay);
+    color: var(--clay);
+    background: transparent;
+  }
+  #stashTitle {
+    color: var(--slate);
+    margin: 24px 0 12px 0;
+  }
   #curateFooter {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #FFEFD0;
-    padding: 14px 24px;
+    background: var(--ivory);
+    border-top: 1px solid var(--line);
+    padding: 14px 28px;
     display: flex;
     justify-content: center;
     gap: 14px;
   }
-  #showKidsButton { background: #4E9F3D; font-size: 1.3em; padding: 16px 30px; }
+  #showKidsButton { font-size: 1.25em; padding: 16px 32px; }
   #homeButton {
     position: absolute;
-    top: 10px;
-    right: 16px;
+    top: 12px;
+    right: 20px;
     background: transparent;
-    font-size: 1.4em;
+    color: var(--ink);
+    font-size: 1.3em;
   }
-  #saveButton { background: #E8A03E; }
+  #homeButton:hover, #curateHomeButton:hover { background: var(--paper); }
+  #saveButton { background: var(--kraft); color: var(--ink); }
+  #saveButton:hover { background: #C08F69; }
 </style>
 </head>
 <body>
