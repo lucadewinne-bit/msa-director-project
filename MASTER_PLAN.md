@@ -20,7 +20,7 @@ Submitting July 15–16 (not the deadline day) is the target.
 | GitHub account + repo         | ✅ DONE     | public repo: github.com/lucadewinne-bit/msa-director-project |
 | Phase 1: research + spec      | ✅ DONE     | SPEC.md written and committed — the source of truth |
 | Staff discovery conversation  | NOT STARTED | ask staff for 15 min EARLY this week |
-| Phase 2: build V1             | IN PROGRESS | walking skeleton LIVE end-to-end: page → server → real Claude → answer on screen. Next: brainstorm → script → publish flow |
+| Phase 2: build V1             | IN PROGRESS | V1 nearly feature-complete: brainstorm (Show & Tell rules) → story-ready glow → PUMA step cards (camera/lights/sound/CapCut) → staff curation with Stash → kid slide mode with read-aloud → save + Google-Slides-style home page. Safety tested (redirects + name rule). Remaining: staff runbook, feedback form, real MSA test |
 | Test with kids/staff at MSA   | NOT STARTED | schedule the session by Day 3 |
 | Staff runbook (1 page)        | NOT STARTED |       |
 | Essay 1: community impact     | NOT STARTED |       |
