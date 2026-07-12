@@ -1,4 +1,17 @@
-# Tells Vercel which file is "the app": the handler in api/chat.py.
-# That handler serves the web page (GET) and talks to Claude (POST).
+# Vercel setup for the MSA Script Builder.
+#  - dependencies: the Claude software the middleman needs.
+#  - [tool.uv] package = false: this is just an app to run, not a
+#    library to build, so the installer shouldn't try to package it.
+#  - [tool.vercel] entrypoint: which file is "the app" — the handler
+#    in api/chat.py, which serves the page (GET) and Claude (POST).
+[project]
+name = "msa-script-builder"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["anthropic"]
+
+[tool.uv]
+package = false
+
 [tool.vercel]
 entrypoint = "api.chat:handler"
