@@ -162,8 +162,13 @@ def practice_reply(history):
 
 
 def read_api_key():
-    """Read the secret key from the Vercel setting. None if it's not set up."""
-    key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    """Read the secret key from the Vercel setting. None if it's not set up.
+
+    Defensive: use only the first non-empty line, so a stray line break or
+    an accidental double-paste in the Vercel setting can't corrupt the
+    request (a newline in the key makes an illegal HTTP header)."""
+    raw = os.environ.get("ANTHROPIC_API_KEY", "")
+    key = next((line.strip() for line in raw.splitlines() if line.strip()), "")
     if not key.startswith("sk-ant-"):
         return None  # missing or not a real key
     return key
@@ -242,11 +247,8 @@ class handler(BaseHTTPRequestHandler):
                     reply = {"text": ask_claude(data["history"])}
             except anthropic.AuthenticationError:
                 reply = {"error": "The API key doesn't work. Check the Vercel setting."}
-            except Exception as problem:  # TEMP diagnostic: surface the real cause
-                cause = problem.__cause__
-                reply = {"error": "Claude had a problem: "
-                                  f"{type(problem).__name__}: {problem} || "
-                                  f"cause: {type(cause).__name__ if cause else 'none'}: {cause}"}
+            except anthropic.APIError as problem:
+                reply = {"error": f"Claude had a problem: {problem.message}"}
 
         body = json.dumps(reply).encode()
         self.send_response(200)
