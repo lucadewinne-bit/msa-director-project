@@ -20,6 +20,8 @@ makes this THE bottleneck of every production.
   (read aloud), they decide everything — but they never chat with the AI directly.
 - **Staff:** the translator. Staff types into the tool, reads Claude's questions
   to the kids, types the kids' answers back, and curates the final step cards.
+  The app is always used by a staff member together with the kids — always
+  supervised, never by a child alone.
 - **The AI (Claude):** the co-writer. Asks questions, drafts, revises. Never
   talks to a child directly, never sees a child's name.
 
@@ -49,6 +51,19 @@ makes this THE bottleneck of every production.
   (keep / skip / edit per card).
 - Kid-facing step-card mode for the studio: one card at a time, first/then,
   optional visual timers, nameless role slots (tap to claim, no names).
+- A welcome / context view on the home screen (added after first user testing):
+  in plain language, what the Script Builder is, who it's for (staff and kids
+  together, always supervised), and the whole path — Brainstorm → Script →
+  Step cards → Film in the studio. Skippable and returnable, so it helps
+  first-timers without slowing people who already know the tool.
+- A journey indicator shown while working: the three in-app steps
+  (Brainstorm → Script → Cards, all required before filming) with a clear
+  marker of where you are right now, and "🎥 Film in the studio" as the
+  off-app finish line.
+- A "?" help button: a simple question-and-answer guide, split into questions
+  for staff (how to start, change the script, help a stuck kid, what's saved
+  about children) and questions for kids (short and 🔊 read-aloud: what are we
+  making, what happens next, whose turn is it).
 
 ## What V1 deliberately does NOT do (see VISION.md for the future)
 

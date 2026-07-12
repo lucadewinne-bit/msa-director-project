@@ -436,15 +436,180 @@
   #homeButton:hover, #curateHomeButton:hover { background: var(--paper); }
   #saveButton { background: var(--kraft); color: var(--ink); }
   #saveButton:hover { background: #C08F69; }
+
+  /* ---- Welcome / context box on the home screen (feedback #1) ---- */
+  #welcomeBox {
+    background: var(--ivory);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--clay);
+    border-radius: 12px;
+    margin: 28px 36px 0 36px;
+    padding: 18px 22px;
+  }
+  #welcomeBox h2 { font-size: 1.35em; margin: 0 0 6px 0; }
+  #welcomeBox p { margin: 6px 0; color: var(--slate); font-size: 1.05em; line-height: 1.5; }
+  #welcomeBox .who { color: var(--ink); }
+  #welcomeFlow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin-top: 12px;
+    font-size: 1.05em;
+  }
+  #welcomeFlow .step {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 14px;
+    white-space: nowrap;
+  }
+  #welcomeFlow .arrow { color: var(--kraft); font-weight: 700; }
+  #welcomeToggle {
+    background: transparent;
+    color: var(--slate);
+    border: 1px solid var(--line);
+    font-size: 0.9em;
+    padding: 4px 12px;
+    float: right;
+  }
+  #welcomeToggle:hover { background: var(--paper); }
+  #helpButtonHome { margin-top: 14px; }
+  #welcomeBox.collapsed .welcomeBody { display: none; }
+
+  /* ---- Journey indicator (feedback #2): where are we in the process ---- */
+  .journeyBar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 28px;
+    font-size: 0.98em;
+  }
+  .journeyBar .jstep {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    color: var(--slate);
+    white-space: nowrap;
+  }
+  .journeyBar .jstep .jnum {
+    font-weight: 700;
+    opacity: 0.6;
+  }
+  .journeyBar .jstep.active {
+    background: var(--clay);
+    color: var(--ivory);
+    font-weight: 600;
+  }
+  .journeyBar .jstep.active .jnum { opacity: 1; }
+  .journeyBar .jstep.done { color: var(--ink); }
+  .journeyBar .jstep.done .jnum { color: var(--clay); opacity: 1; }
+  .journeyBar .jarrow { color: var(--kraft); }
+  .journeyBar .jfilm {
+    margin-left: 6px;
+    padding-left: 14px;
+    border-left: 1px dashed var(--line);
+    color: var(--slate);
+    font-style: italic;
+  }
+
+  /* ---- Help panel (feedback #3) ---- */
+  #helpButton {
+    position: absolute;
+    top: 14px;
+    right: 96px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.95em;
+    padding: 8px 14px;
+  }
+  #helpButton:hover { background: var(--paper); }
+  #helpMode {
+    position: fixed;
+    inset: 0;
+    background: rgba(25,25,25,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+    padding: 20px;
+  }
+  #helpMode.open { display: flex; }
+  #helpCard {
+    background: var(--ivory);
+    border-radius: 16px;
+    max-width: 620px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 26px 30px;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.4);
+  }
+  #helpCard h2 { font-size: 1.6em; margin: 0 0 4px 0; }
+  #helpCard h3 { font-size: 1.15em; margin: 22px 0 10px 0; color: var(--clay); }
+  #helpClose { float: right; background: transparent; color: var(--slate); font-size: 1.4em; padding: 0 8px; }
+  #helpClose:hover { color: var(--ink); }
+  .qa { border-bottom: 1px solid var(--line); padding: 12px 0; }
+  .qa .q { font-weight: 600; color: var(--ink); font-size: 1.05em; }
+  .qa .a { color: var(--slate); font-size: 1.02em; line-height: 1.5; margin-top: 4px; }
+  .qa .hearQa {
+    background: transparent;
+    border: 1px solid var(--kraft);
+    color: var(--clay);
+    font-size: 0.85em;
+    padding: 4px 12px;
+    margin-top: 8px;
+  }
+  .qa .hearQa:hover { background: var(--paper); }
 </style>
 </head>
 <body>
 
-<header>🎬 Script Builder <button id="homeButton" title="Home">🏠</button></header>
+<header>🎬 Script Builder <button id="helpButton" class="js-open-help" title="Open help">❓ Help</button><button id="homeButton" title="Home">🏠</button></header>
+
+<!-- Journey indicator (feedback #2): the 3 in-app steps + filming; current one lit -->
+<div id="journeyBar" class="journeyBar">
+  <span class="jstep" data-step="brainstorm"><span class="jnum">1</span> 💡 Brainstorm</span>
+  <span class="jarrow">→</span>
+  <span class="jstep" data-step="script"><span class="jnum">2</span> 📝 Script</span>
+  <span class="jarrow">→</span>
+  <span class="jstep" data-step="cards"><span class="jnum">3</span> 🗂️ Cards</span>
+  <span class="jfilm">then 🎥 Film in the studio</span>
+</div>
 
 <!-- Home page: like Google Slides — start-new gallery + your saved movies -->
 <div id="homePage" class="open">
   <header>🎬 Script Builder</header>
+
+  <!-- Welcome / context (feedback #1): what this is, who it's for, the whole path -->
+  <div id="welcomeBox">
+    <button id="welcomeToggle" type="button">Hide ▲</button>
+    <h2>👋 Welcome — what is this?</h2>
+    <div class="welcomeBody">
+      <p class="who">The Script Builder is for <strong>staff and kids to use together</strong>,
+        always with a grown-up. You type and read the questions out loud — the kids decide the
+        story. The kids never chat with the computer themselves.</p>
+      <p>Here is the whole path from idea to movie:</p>
+      <div id="welcomeFlow">
+        <span class="step">💡 Brainstorm the story</span>
+        <span class="arrow">→</span>
+        <span class="step">📝 Build &amp; lock the script</span>
+        <span class="arrow">→</span>
+        <span class="step">🗂️ Make the step cards</span>
+        <span class="arrow">→</span>
+        <span class="step">🎥 Film in the studio</span>
+      </div>
+      <p style="margin-top:12px;">The first three steps happen here in the app. Filming happens in
+        your real studio. Need a hand? Open help any time.</p>
+      <button id="helpButtonHome" class="js-open-help" type="button">❓ Open help</button>
+    </div>
+  </div>
+
   <div class="homeTop">
     <h2>Start a new movie</h2>
     <div class="templateRow">
@@ -480,6 +645,14 @@
 <!-- Curation screen: staff check, fix, and skip cards before kid mode -->
 <div id="curateMode">
   <header>🎬 Check the cards, director! <button id="curateHomeButton" title="Home" style="float:right;background:transparent;font-size:1em;">🏠</button></header>
+  <div class="journeyBar">
+    <span class="jstep" data-step="brainstorm"><span class="jnum">1</span> 💡 Brainstorm</span>
+    <span class="jarrow">→</span>
+    <span class="jstep" data-step="script"><span class="jnum">2</span> 📝 Script</span>
+    <span class="jarrow">→</span>
+    <span class="jstep" data-step="cards"><span class="jnum">3</span> 🗂️ Cards</span>
+    <span class="jfilm">then 🎥 Film in the studio</span>
+  </div>
   <div id="curateScroll">
     <div id="curateHint">Read each card. Fix any words by typing right on the card.
 Skip cards you don't want — they wait in the Stash below, nothing is thrown away.</div>
@@ -510,6 +683,30 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
   </div>
   <button id="cardHomeButton" title="Home">🏠</button>
   <button id="editCardsButton" title="Check / fix the cards">✏️</button>
+</div>
+
+<!-- Help panel (feedback #3): simple Q&A for staff and kids, kids' answers read aloud -->
+<div id="helpMode">
+  <div id="helpCard">
+    <button id="helpClose" title="Close">✕</button>
+    <h2>❓ Help</h2>
+    <p style="color:var(--slate);margin:0 0 6px 0;">Quick answers. Tap 🔊 on a kid answer to hear it read out loud.</p>
+
+    <h3>For the staff member</h3>
+    <div class="qa"><div class="q">What is this app?</div><div class="a">It helps you and the kids turn a movie idea into filming steps. You type and read aloud; the kids decide the story. Kids never chat with the computer.</div></div>
+    <div class="qa"><div class="q">How do I start?</div><div class="a">On the home screen pick a starter idea or "Blank story", then type the kids' idea and press Send 🎥.</div></div>
+    <div class="qa"><div class="q">How do I change the story or script?</div><div class="a">Just keep chatting. Type what the kids want different and the co-writer updates the story — as many times as you like.</div></div>
+    <div class="qa"><div class="q">How do I make the step cards?</div><div class="a">When the story is ready, a glowing "Step cards 🗂️" button appears. Press it and the cards are made for you.</div></div>
+    <div class="qa"><div class="q">How do I fix or skip a card?</div><div class="a">On the check screen, type right on a card to fix any words. Press "Skip" to send a card to the Stash — nothing is ever deleted, and one tap brings it back.</div></div>
+    <div class="qa"><div class="q">What if a kid gets stuck?</div><div class="a">Read the last question again, offer two choices, or press "Hear it 🔊". There's no wrong answer — keep it playful.</div></div>
+    <div class="qa"><div class="q">Is anything about the kids saved?</div><div class="a">No. No names, photos, or recordings — ever. Saved movies hold only the story, and only on this computer.</div></div>
+
+    <h3>For the kids 🎬</h3>
+    <div class="qa"><div class="q">What are we making?</div><div class="a" data-say="A real movie, from your idea!">A real movie, from your idea! 🎬</div><button class="hearQa">🔊 Hear it</button></div>
+    <div class="qa"><div class="q">What happens next?</div><div class="a" data-say="First we make the story. Then we make the cards. Then we film!">First we make the story. Then we make the cards. Then we film! 🎥</div><button class="hearQa">🔊 Hear it</button></div>
+    <div class="qa"><div class="q">Whose turn is it?</div><div class="a" data-say="Everyone helps! The director picks, and we all build the movie together.">Everyone helps! The director picks, and we all build the movie together. 🌟</div><button class="hearQa">🔊 Hear it</button></div>
+    <div class="qa"><div class="q">Do I have to read?</div><div class="a" data-say="Nope! Press the speaker button and it reads to you.">Nope! Press the 🔊 button and it reads to you.</div><button class="hearQa">🔊 Hear it</button></div>
+  </div>
 </div>
 
 <form id="chatForm">
@@ -587,6 +784,7 @@ let storyReady = false;
 // so the next step is impossible to miss.
 function showStoryReady() {
   storyReady = true;
+  setJourneyPhase("script");            // story is locked — we're at the Script step
   cardsButton.classList.remove("waiting");
   const invite = document.createElement("div");
   invite.className = "bigNext";
@@ -668,6 +866,7 @@ function showCurrentCard() {
 
 function openCardMode() {
   cardIndex = 0;
+  setJourneyPhase("cards");
   cardMode.classList.add("open");
   cardsButton.classList.remove("ready");   // job done — stop glowing
   showCurrentCard();
@@ -762,6 +961,7 @@ function renderCurate() {
 }
 
 function openCurateMode() {
+  setJourneyPhase("cards");
   cardMode.classList.remove("open");
   renderCurate();
   curateMode.classList.add("open");
@@ -857,6 +1057,7 @@ function showHomePage() {
 
 document.getElementById("newStoryButton").addEventListener("click", () => {
   homePage.classList.remove("open");
+  setJourneyPhase("brainstorm");
   input.focus();
 });
 
@@ -864,6 +1065,7 @@ document.getElementById("newStoryButton").addEventListener("click", () => {
 for (const starter of document.querySelectorAll(".starter")) {
   starter.addEventListener("click", () => {
     homePage.classList.remove("open");
+    setJourneyPhase("brainstorm");
     input.value = starter.dataset.idea;
     form.requestSubmit();
   });
@@ -906,6 +1108,47 @@ document.getElementById("cardHomeButton").addEventListener("click", () => {
   cardMode.classList.remove("open");
   showHomePage();
 });
+
+// ---- Journey indicator: light up the step we're on (feedback #2) ----
+function setJourneyPhase(phase) {
+  const order = ["brainstorm", "script", "cards"];
+  const at = order.indexOf(phase);
+  document.querySelectorAll(".journeyBar .jstep").forEach(step => {
+    const i = order.indexOf(step.dataset.step);
+    step.classList.toggle("active", i === at);
+    step.classList.toggle("done", i > -1 && i < at);
+  });
+}
+setJourneyPhase("brainstorm");
+
+// ---- Welcome box on the home screen: collapsible, remembers the choice (feedback #1) ----
+const welcomeBox = document.getElementById("welcomeBox");
+const welcomeToggle = document.getElementById("welcomeToggle");
+function renderWelcome() {
+  const collapsed = localStorage.getItem("msaWelcomeCollapsed") === "1";
+  welcomeBox.classList.toggle("collapsed", collapsed);
+  welcomeToggle.textContent = collapsed ? "What is this? ▼" : "Hide ▲";
+}
+welcomeToggle.addEventListener("click", () => {
+  const nowCollapsed = !welcomeBox.classList.contains("collapsed");
+  localStorage.setItem("msaWelcomeCollapsed", nowCollapsed ? "1" : "0");
+  renderWelcome();
+});
+renderWelcome();
+
+// ---- Help panel: simple Q&A, with read-aloud for the kid answers (feedback #3) ----
+const helpMode = document.getElementById("helpMode");
+function openHelp() { helpMode.classList.add("open"); }
+function closeHelp() { speechSynthesis.cancel(); helpMode.classList.remove("open"); }
+document.querySelectorAll(".js-open-help").forEach(b => b.addEventListener("click", openHelp));
+document.getElementById("helpClose").addEventListener("click", closeHelp);
+helpMode.addEventListener("click", (event) => { if (event.target === helpMode) closeHelp(); });
+for (const btn of document.querySelectorAll(".hearQa")) {
+  btn.addEventListener("click", () => {
+    const answer = btn.parentElement.querySelector(".a");
+    readAloud(answer.dataset.say || answer.textContent);
+  });
+}
 
 showHomePage();
 
