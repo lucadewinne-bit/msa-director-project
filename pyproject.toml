@@ -1,0 +1,4 @@
+# Tells Vercel which file is "the app": the handler in api/chat.py.
+# That handler serves the web page (GET) and talks to Claude (POST).
+[tool.vercel]
+entrypoint = "api.chat:handler"
