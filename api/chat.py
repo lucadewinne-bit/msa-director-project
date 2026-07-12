@@ -14,6 +14,7 @@ import json
 import os
 
 from http.server import BaseHTTPRequestHandler
+from pathlib import Path
 
 import anthropic
 
@@ -199,8 +200,27 @@ def ask_claude_for_cards(history):
     return json.loads(text)["cards"]
 
 
+def read_index_html():
+    """Load the web page (app/index.html) so we can serve it."""
+    here = Path(__file__).resolve().parent
+    for candidate in (here.parent / "app" / "index.html", Path("app/index.html")):
+        try:
+            return candidate.read_bytes()
+        except FileNotFoundError:
+            continue
+    return b"<h1>MSA Script Builder</h1><p>Page file not found.</p>"
+
+
 class handler(BaseHTTPRequestHandler):
-    """Vercel calls this for each request to /api/chat (the app's /chat)."""
+    """Vercel routes every request here: GET serves the page, POST asks Claude."""
+
+    def do_GET(self):
+        # The browser asks for the page -> send index.html
+        page = read_index_html()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(page)
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length", 0))
