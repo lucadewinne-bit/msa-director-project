@@ -14,6 +14,8 @@ It describes the four-phase model: 💡 Brainstorm → 📝 Script → 🗂️ S
 Three roles — **kid, staff, and Claude** — move a story through four phases. The app covers
 the first three; filming happens in the real studio.
 
+📊 **[Open the full-page process map →](https://lucadewinne-bit.github.io/msa-director-project/)**
+
 ```mermaid
 flowchart LR
   classDef phase fill:#EAEAF2,stroke:#8A8AA0,color:#20222E,font-weight:bold
