@@ -151,3 +151,23 @@ interview and sound exactly like himself.
   clean line, plus code that now ignores stray line breaks. That key was
   briefly exposed by a debug message during setup, so I deleted it and made
   a fresh one.
+
+---
+
+**#7 — Onboarding, journey map, and help — from first user testing** · 2026-07-12
+- **Decision:** After the first testing session (tested with my siblings), add
+  three front-end-only features: (1) a welcome / context view that explains what
+  the tool is, who it's for (staff + kids, always supervised), and the full path;
+  (2) a journey indicator showing the three in-app steps (Brainstorm → Script →
+  Cards) and where you are, with filming as the off-app finish; (3) a "?" help
+  panel with plain Q&A for staff and simple read-aloud Q&A for kids.
+- **Options considered:** Leave the app as-is (but testers couldn't tell what it
+  was for or where they were); a written runbook only (doesn't help mid-session);
+  a full guided tour / coach-marks (heavier to build, and easy to get in the way).
+- **Why:** Real first-time users couldn't tell what the app was, the order of the
+  steps, or where they were in it — three faces of the same gap: context and
+  wayfinding. These are cheap, static additions (no new Claude calls, no child
+  data) that answer the feedback directly without touching the parts that work.
+- **What would change my mind:** If the welcome view or help panel gets in the way
+  of staff who already know the tool, make them more skippable or off by default.
+- **Outcome:** _pending_ — re-test with the same people.
