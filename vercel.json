@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/app/index.html" },
+    { "source": "/chat", "destination": "/api/chat" }
+  ],
+  "functions": {
+    "api/chat.py": { "maxDuration": 60 }
+  }
+}
