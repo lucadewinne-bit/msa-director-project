@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSA Script Builder — Process Map</title>
+<style>
+  /* ============================================================
+     MSA Script Builder — process map
+     Identity: a film "call sheet" / shot-list blueprint.
+     Cool paper (light) / darkened studio (dark) grounds, warm
+     tungsten key-light accent, three lane hues for the actors.
+     Type personality is treatment, not a webfont: credits-style
+     letterspaced caps + a monospace call-sheet utility face.
+     ============================================================ */
+
+  :root {
+    --bg:      #E9EBEF;
+    --panel:   #FFFFFF;
+    --panel-2: #F3F5F9;
+    --line:    #D4D9E2;
+    --line-2:  #E1E5EC;
+    --ink:     #181B21;
+    --muted:   #5A6270;
+    --key:     #A85F17;   /* tungsten key light, darkened for paper */
+    --key-2:   #C27A2C;
+    --key-soft:#F3E6D4;
+    --kid:     #A96716;   /* amber lane  — the storyteller/light */
+    --staff:   #1C7C71;   /* teal lane   — the steady operator   */
+    --claude:  #6A45B4;   /* violet lane — the co-writer         */
+    --shadow:  0 1px 2px rgba(20,25,35,.05), 0 10px 26px rgba(20,25,35,.07);
+    --studio-bg: #EEF0F4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:      #101219;
+      --panel:   #181B23;
+      --panel-2: #20242E;
+      --line:    #2C323E;
+      --line-2:  #242A34;
+      --ink:     #ECEEF3;
+      --muted:   #98A0B0;
+      --key:     #E8A24C;
+      --key-2:   #F0B463;
+      --key-soft:#2A2417;
+      --kid:     #E8A24C;
+      --staff:   #4FB6AA;
+      --claude:  #AF8FEE;
+      --shadow:  0 1px 2px rgba(0,0,0,.32), 0 12px 32px rgba(0,0,0,.4);
+      --studio-bg: #15181F;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#E9EBEF; --panel:#FFFFFF; --panel-2:#F3F5F9; --line:#D4D9E2; --line-2:#E1E5EC;
+    --ink:#181B21; --muted:#5A6270; --key:#A85F17; --key-2:#C27A2C; --key-soft:#F3E6D4;
+    --kid:#A96716; --staff:#1C7C71; --claude:#6A45B4;
+    --shadow:0 1px 2px rgba(20,25,35,.05), 0 10px 26px rgba(20,25,35,.07); --studio-bg:#EEF0F4;
+  }
+  :root[data-theme="dark"] {
+    --bg:#101219; --panel:#181B23; --panel-2:#20242E; --line:#2C323E; --line-2:#242A34;
+    --ink:#ECEEF3; --muted:#98A0B0; --key:#E8A24C; --key-2:#F0B463; --key-soft:#2A2417;
+    --kid:#E8A24C; --staff:#4FB6AA; --claude:#AF8FEE;
+    --shadow:0 1px 2px rgba(0,0,0,.32), 0 12px 32px rgba(0,0,0,.4); --studio-bg:#15181F;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 64px; }
+
+  /* ---- shared type utilities ---- */
+  .mono {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    letter-spacing: .04em;
+  }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--key); font-weight: 600;
+  }
+  .caps {
+    text-transform: uppercase; letter-spacing: .09em; font-weight: 700;
+  }
+
+  /* ---- header ---- */
+  header.hero { position: relative; padding-top: 10px; }
+  .clap {
+    display: flex; align-items: center; gap: 0; height: 16px; width: 128px;
+    border-radius: 3px; overflow: hidden; margin-bottom: 22px;
+    box-shadow: var(--shadow);
+    background: var(--ink);
+  }
+  .clap i {
+    height: 100%; flex: 1;
+    background: repeating-linear-gradient(115deg, var(--ink) 0 10px, var(--panel) 10px 20px);
+  }
+  h1 {
+    font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+    line-height: 1.02; letter-spacing: -0.02em; margin: 0 0 14px;
+    text-wrap: balance; font-weight: 800;
+  }
+  .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); color: var(--muted); max-width: 60ch; margin: 0 0 26px; }
+
+  .northstar {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--key);
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    max-width: 74ch;
+  }
+  .northstar .eyebrow { display: block; margin-bottom: 8px; }
+  .northstar p { margin: 0; font-size: 1.06rem; }
+  .northstar strong { color: var(--key); font-weight: 700; }
+
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px;
+  }
+  .meta span {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 11px; background: var(--panel-2);
+  }
+
+  /* ---- section framing ---- */
+  .sec-label {
+    display: flex; align-items: baseline; gap: 12px;
+    margin: 52px 0 16px;
+  }
+  .sec-label h2 { font-size: 1.15rem; margin: 0; letter-spacing: .02em; }
+  .sec-label .n { font-family: ui-monospace, Menlo, monospace; color: var(--key); font-size: .8rem; }
+  .sec-label .rule { flex: 1; height: 1px; background: var(--line); align-self: center; }
+
+  /* ---- sequence strip ---- */
+  .seq { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .seq .step {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 15px; box-shadow: var(--shadow);
+  }
+  .seq .step .num { font-family: ui-monospace, Menlo, monospace; font-size: .74rem; color: var(--key); font-weight: 700; }
+  .seq .step .nm { font-weight: 650; font-size: .96rem; }
+  .seq .step.studio { border-style: dashed; background: var(--studio-bg); }
+  .seq .arrow { align-self: center; color: var(--muted); font-size: 1rem; }
+  .seq-note {
+    margin-top: 10px; font-size: .84rem; color: var(--muted);
+  }
+  .seq-note b { color: var(--ink); font-weight: 650; }
+
+  /* ---- the swimlane matrix ---- */
+  .matrix-scroll { overflow-x: auto; padding: 4px 2px 6px; margin: 0 -2px; }
+  .matrix {
+    display: grid;
+    grid-template-columns: 148px repeat(4, minmax(186px, 1fr));
+    gap: 10px;
+    min-width: 900px;
+  }
+  .corner {
+    display: flex; align-items: flex-end;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: .64rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); padding: 6px 4px;
+  }
+  .col-head {
+    position: relative;
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-top: 2px solid var(--key);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .col-head .num { font-family: ui-monospace, Menlo, monospace; font-size: .72rem; color: var(--key); font-weight: 700; }
+  .col-head .nm { display: block; font-weight: 700; font-size: 1rem; margin-top: 3px; }
+  .col-head .tag {
+    display: inline-block; margin-top: 8px;
+    font-family: ui-monospace, Menlo, monospace; font-size: .6rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px;
+  }
+  .col-head.studio { border-top-color: var(--muted); border-style: dashed; background: var(--studio-bg); }
+  .col-head:not(.studio):not(:first-of-type)::after {
+    /* sequence arrow sitting in the grid gap */
+    content: "›"; position: absolute; right: -12px; top: 50%;
+    transform: translateY(-50%); color: var(--muted); font-size: 1.1rem; z-index: 2;
+  }
+
+  .lane {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 3px solid var(--lane);
+    border-radius: 10px; padding: 12px 13px;
+  }
+  .lane .who { display: flex; align-items: center; gap: 8px; }
+  .lane .ic {
+    width: 28px; height: 28px; flex: none; display: grid; place-items: center;
+    border-radius: 8px; font-size: 1rem;
+    background: color-mix(in srgb, var(--lane) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--lane) 40%, transparent);
+  }
+  .lane .role { font-weight: 750; font-size: .98rem; color: var(--lane); }
+  .lane .sub { font-size: .74rem; color: var(--muted); line-height: 1.35; }
+
+  .act {
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 3px solid var(--lane);
+    border-radius: 10px; padding: 12px 14px;
+    font-size: .88rem; color: var(--ink);
+    box-shadow: var(--shadow);
+    transition: transform .16s ease, box-shadow .16s ease;
+  }
+  .act:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.16); }
+  .act .k {
+    display: block; font-family: ui-monospace, Menlo, monospace;
+    font-size: .6rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--lane); margin-bottom: 5px; font-weight: 700;
+  }
+  .act.quiet { background: var(--panel-2); border-style: dashed; color: var(--muted); box-shadow: none; }
+  .act.quiet:hover { transform: none; box-shadow: none; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 16px 22px; margin-top: 16px; align-items: center; }
+  .legend .item { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); }
+  .legend .sw { width: 13px; height: 13px; border-radius: 4px; background: var(--lane); border: 1px solid color-mix(in srgb, var(--lane) 55%, var(--line)); }
+  .legend .dash { width: 22px; height: 0; border-top: 2px dashed var(--muted); }
+
+  /* ---- support panels ---- */
+  .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 16px; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px; box-shadow: var(--shadow);
+  }
+  .panel h3 { margin: 0 0 12px; font-size: 1.02rem; letter-spacing: .01em; }
+  .panel .tick { font-family: ui-monospace, Menlo, monospace; font-size: .68rem; color: var(--key); }
+  .panel ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .panel li { display: flex; gap: 10px; font-size: .9rem; color: var(--ink); }
+  .panel li::before { content: "▪"; color: var(--key); flex: none; }
+  .panel li b { font-weight: 700; }
+  .flowline { font-family: ui-monospace, Menlo, monospace; font-size: .82rem; color: var(--ink); line-height: 1.9; }
+  .flowline .a { color: var(--kid); font-weight: 700; }
+  .flowline .b { color: var(--staff); font-weight: 700; }
+  .flowline .c { color: var(--claude); font-weight: 700; }
+
+  /* ---- footer ---- */
+  footer {
+    margin-top: 54px; padding-top: 20px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center;
+    font-size: .82rem; color: var(--muted);
+  }
+  footer .mono { font-size: .72rem; }
+  footer a { color: var(--key); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--key) 40%, transparent); }
+  footer a:hover { border-bottom-color: var(--key); }
+  footer .dot { opacity: .5; }
+
+  a:focus-visible, .act:focus-visible { outline: 2px solid var(--key); outline-offset: 2px; }
+
+  /* entrance motion — tasteful, staggered, reduced-motion aware */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(10px); animation: rise .5s cubic-bezier(.2,.7,.2,1) forwards; }
+    .d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.19s}
+    .d4{animation-delay:.26s}.d5{animation-delay:.33s}.d6{animation-delay:.4s}
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  }
+
+  @media (max-width: 640px) {
+    .northstar p { font-size: 1rem; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="clap" aria-hidden="true"><i></i></div>
+    <p class="eyebrow">Product spec · V1 · Process map</p>
+    <h1>The MSA Script Builder</h1>
+    <p class="lede">How a kid's vague story idea becomes a filmed movie — with staff and Claude
+      carrying the mechanical load, and the child keeping the authorship.</p>
+
+    <div class="northstar reveal d1">
+      <span class="eyebrow">North star</span>
+      <p>AI carries the mechanical load — reading, sequencing, remembering what comes next — so the
+      child's energy goes to the <strong>irreplaceably human work</strong>: imagining, telling,
+      performing, and creating together.</p>
+    </div>
+
+    <div class="meta">
+      <span>3 roles</span>
+      <span>4 phases</span>
+      <span>App covers 1–3</span>
+      <span>Staff-operated</span>
+      <span>Zero child data</span>
+    </div>
+  </header>
+
+  <!-- SEQUENCE -->
+  <div class="sec-label">
+    <span class="n">01</span><h2>The four phases, in order</h2><span class="rule"></span>
+  </div>
+  <div class="seq">
+    <div class="step reveal d1"><span class="num">01</span><span>💡</span><span class="nm">Brainstorm</span></div>
+    <span class="arrow">→</span>
+    <div class="step reveal d2"><span class="num">02</span><span>📝</span><span class="nm">Script</span></div>
+    <span class="arrow">→</span>
+    <div class="step reveal d3"><span class="num">03</span><span>🗂️</span><span class="nm">Step cards</span></div>
+    <span class="arrow">→</span>
+    <div class="step studio reveal d4"><span class="num">04</span><span>🎥</span><span class="nm">Film</span></div>
+  </div>
+  <p class="seq-note"><b>Phases 1–3 happen inside the app.</b> Phase 4 happens in the real studio with
+    MSA's own cameras — the app never records, stores, or uploads a child's photo, video, or voice.</p>
+
+  <!-- SWIMLANES -->
+  <div class="sec-label">
+    <span class="n">02</span><h2>Who does what, phase by phase</h2><span class="rule"></span>
+  </div>
+
+  <div class="matrix-scroll">
+    <div class="matrix">
+      <!-- header row -->
+      <div class="corner">Role ↓ / When →</div>
+      <div class="col-head"><span class="num">01</span><span class="nm">💡 Brainstorm</span><span class="tag">In the app</span></div>
+      <div class="col-head"><span class="num">02</span><span class="nm">📝 Script</span><span class="tag">In the app</span></div>
+      <div class="col-head"><span class="num">03</span><span class="nm">🗂️ Step cards</span><span class="tag">In the app</span></div>
+      <div class="col-head studio"><span class="num">04</span><span class="nm">🎥 Film</span><span class="tag">In the studio</span></div>
+
+      <!-- KID lane -->
+      <div class="lane" style="--lane:var(--kid)">
+        <div class="who"><span class="ic">🧒</span><span class="role">Kid</span></div>
+        <span class="sub">The storyteller. Decides everything — never chats with the AI.</span>
+      </div>
+      <div class="act reveal d1" style="--lane:var(--kid)"><span class="k">Decides</span>Pitches the idea and shapes it — hero, place, problem, fix, and ending.</div>
+      <div class="act reveal d2" style="--lane:var(--kid)"><span class="k">Approves</span>Hears the story read aloud and says what to change.</div>
+      <div class="act quiet reveal d3" style="--lane:var(--kid)"><span class="k">Waits</span>Staff check the cards first — only the kept ones reach the kids.</div>
+      <div class="act reveal d4" style="--lane:var(--kid)"><span class="k">Performs</span>Acts and films the movie, guided by big read-aloud step cards.</div>
+
+      <!-- STAFF lane -->
+      <div class="lane" style="--lane:var(--staff)">
+        <div class="who"><span class="ic">🧑‍🏫</span><span class="role">Staff</span></div>
+        <span class="sub">The translator. Types, reads aloud, curates. Always present.</span>
+      </div>
+      <div class="act reveal d2" style="--lane:var(--staff)"><span class="k">Relays</span>Types the idea in; reads Claude's questions aloud and types the kids' answers back.</div>
+      <div class="act reveal d3" style="--lane:var(--staff)"><span class="k">Locks it</span>Asks for changes as often as needed, then presses <b>Publish</b> to lock the script.</div>
+      <div class="act reveal d4" style="--lane:var(--staff)"><span class="k">Curates</span>Generates cards, then keeps / skips to the Stash / fixes wording — then "Show the kids".</div>
+      <div class="act reveal d5" style="--lane:var(--staff)"><span class="k">Directs</span>Runs the studio with MSA's existing cameras and workflow.</div>
+
+      <!-- CLAUDE lane -->
+      <div class="lane" style="--lane:var(--claude)">
+        <div class="who"><span class="ic">🤖</span><span class="role">Claude</span></div>
+        <span class="sub">The co-writer. Never talks to a child; never sees a name.</span>
+      </div>
+      <div class="act reveal d3" style="--lane:var(--claude)"><span class="k">Asks</span>One fun question at a time (Show &amp; Tell rules); shapes a story arc, then flags <b>[Story ready]</b>.</div>
+      <div class="act reveal d4" style="--lane:var(--claude)"><span class="k">Writes</span>Turns the brainstorm into a full kid-friendly script. Revises on request.</div>
+      <div class="act reveal d5" style="--lane:var(--claude)"><span class="k">Breaks down</span>Splits the script into 5–8 PUMA cards with camera, lights, sound &amp; edit tips.</div>
+      <div class="act quiet reveal d6" style="--lane:var(--claude)"><span class="k">Steps back</span>Not involved. The app never records or stores any child's media — ever.</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="item"><span class="sw" style="--lane:var(--kid)"></span> Kid</span>
+    <span class="item"><span class="sw" style="--lane:var(--staff)"></span> Staff</span>
+    <span class="item"><span class="sw" style="--lane:var(--claude)"></span> Claude</span>
+    <span class="item"><span class="dash"></span> Dashed = happens off-app, in the studio</span>
+  </div>
+
+  <!-- RULES + BUILD -->
+  <div class="sec-label">
+    <span class="n">03</span><h2>The rules it runs on</h2><span class="rule"></span>
+  </div>
+  <div class="panels">
+    <div class="panel">
+      <h3>The handoff — always</h3>
+      <p class="flowline"><span class="c">Claude</span> ⇄ <span class="b">Staff</span> ⇄ <span class="a">Kids</span></p>
+      <ul>
+        <li>Staff type and read every question aloud.</li>
+        <li>Kids decide the story; they never chat with the AI directly.</li>
+        <li>Claude never sees a child's name or speaks to a child.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Non-negotiable safety</h3>
+      <ul>
+        <li><b>Staff-mediated</b> only — no direct child–AI chat.</li>
+        <li><b>Zero child data</b>: no names, photos, video, audio, or accounts.</li>
+        <li>Reading level ~age 6; encouraging, film-set language.</li>
+        <li>Never records or stores any child's media — permanent, not just V1.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>How it's built</h3>
+      <ul>
+        <li>One page, two modes: <b>staff</b> (chat + curation) and <b>kid</b> (big cards).</li>
+        <li>The page asks a small serverless <b>middleman</b>, which holds the key and calls the Claude API.</li>
+        <li>Session state lives in the page — nothing about children is stored anywhere.</li>
+        <li>Live on Vercel; the key sits only in an environment variable.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <span class="mono caps" style="color:var(--ink)">MSA Script Builder</span>
+    <span class="dot">·</span>
+    <span>Spec-driven: research → jobs-to-be-done → options → decision → spec → build</span>
+    <span class="dot">·</span>
+    <a href="https://msa-director-project.vercel.app">Live app</a>
+    <a href="https://github.com/lucadewinne-bit/msa-director-project">Repo</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
