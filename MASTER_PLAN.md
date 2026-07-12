@@ -23,8 +23,8 @@ Submitting July 15–16 (not the deadline day) is the target.
 | Phase 2: build V1             | IN PROGRESS | V1 nearly feature-complete: brainstorm (Show & Tell rules) → story-ready glow → PUMA step cards (camera/lights/sound/CapCut) → staff curation with Stash → kid slide mode with read-aloud → save + Google-Slides-style home page. Safety tested (redirects + name rule). Remaining: staff runbook, feedback form, real MSA test |
 | Test with kids/staff at MSA   | NOT STARTED | schedule the session by Day 3 |
 | Staff runbook (1 page)        | NOT STARTED |       |
-| Essay 1: community impact     | NOT STARTED |       |
-| Essay 2: setback/learning     | NOT STARTED |       |
+| Essay 1: community impact     | DRAFT DONE  | in essays/ folder — final polish pass before submitting; "shipped at MSA" line must be TRUE first (do the test!) |
+| Essay 2: setback/learning     | DRAFT DONE  | in essays/ folder — apply the polish note: name MY mistake explicitly |
 | Resume polished               | NOT STARTED |       |
 | LinkedIn polished             | NOT STARTED |       |
 | Final review + SUBMIT         | NOT STARTED | target July 15–16 |
