@@ -133,6 +133,34 @@
     border-radius: 999px; padding: 5px 11px; background: var(--panel-2);
   }
 
+  /* ---- problem hero: the hook + the gap / bridge ---- */
+  h1.hook { font-size: clamp(2.4rem, 6.2vw, 3.9rem); line-height: 1.0; margin-bottom: 18px; }
+  .lede.big { font-size: clamp(1.08rem, 1.9vw, 1.36rem); color: var(--ink); max-width: 62ch; }
+  .lede.big strong { color: var(--key); font-weight: 700; }
+  .gap {
+    margin: 30px 0 20px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 16px; padding: 22px; box-shadow: var(--shadow);
+  }
+  .gap-row { display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap; }
+  .gnode {
+    flex: 1 1 170px; background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 15px 16px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .gnode .gemoji { font-size: 1.7rem; line-height: 1; }
+  .gnode b { font-size: 1.02rem; }
+  .gnode span { font-size: .82rem; color: var(--muted); line-height: 1.4; }
+  .gnode.wall { border: 1px dashed var(--key); background: var(--key-soft); }
+  .gnode.wall b { color: var(--key); }
+  .garrow { align-self: center; color: var(--muted); font-size: 1.3rem; }
+  .bridge {
+    margin-top: 16px; text-align: center; font-weight: 650; font-size: .95rem; color: var(--ink);
+    background: color-mix(in srgb, var(--key) 12%, var(--panel));
+    border: 1px solid color-mix(in srgb, var(--key) 34%, var(--line));
+    border-radius: 999px; padding: 11px 18px;
+  }
+  .byline { color: var(--muted); font-style: italic; font-size: .96rem; margin: 2px 0 0; }
+  section.approach { margin-top: 30px; }
+
   /* ---- section framing ---- */
   .sec-label {
     display: flex; align-items: baseline; gap: 12px;
@@ -280,18 +308,35 @@
 
   <header class="hero">
     <div class="clap" aria-hidden="true"><i></i></div>
-    <p class="eyebrow">Product spec · V1 · Process map</p>
-    <h1>The MSA Script Builder</h1>
-    <p class="lede">How a kid's vague story idea becomes a filmed movie — with staff and Claude
-      carrying the mechanical load, and the child keeping the authorship.</p>
+    <p class="eyebrow">MSA Script Builder · the problem</p>
+    <h1 class="hook">The idea was never the hard part.</h1>
+    <p class="lede big">Kids can picture ambitious movies. What stops them isn't imagination — it's
+      getting from a vague idea to a plan they can actually shoot, holding every step in your head at
+      once. That's <strong>executive function</strong>, and for a kid with ADHD it's a wall. I know —
+      I was that kid, at this academy. The Script Builder carries that load, so kids keep the part
+      that's theirs: imagining, telling, performing.</p>
 
-    <div class="northstar reveal d1">
-      <span class="eyebrow">North star</span>
+    <div class="gap reveal d1">
+      <div class="gap-row">
+        <div class="gnode"><span class="gemoji">💡</span><b>A vague idea</b><span>in a kid's head</span></div>
+        <span class="garrow">→</span>
+        <div class="gnode wall"><span class="gemoji">🧱</span><b>The wall</b><span>start it · sequence it · hold the whole plan at once — executive function</span></div>
+        <span class="garrow">→</span>
+        <div class="gnode"><span class="gemoji">🎬</span><b>A finished movie</b><span>they wrote and filmed</span></div>
+      </div>
+      <div class="bridge">The Script Builder carries the middle — so the wall stops stopping kids.</div>
+    </div>
+
+    <p class="byline">Built by someone who was one of these kids — the tool he wishes he'd had.</p>
+  </header>
+
+  <section class="approach">
+    <div class="northstar reveal d2">
+      <span class="eyebrow">How — the north star</span>
       <p>AI carries the mechanical load — reading, sequencing, remembering what comes next — so the
       child's energy goes to the <strong>irreplaceably human work</strong>: imagining, telling,
       performing, and creating together.</p>
     </div>
-
     <div class="meta">
       <span>3 roles</span>
       <span>4 phases</span>
@@ -299,7 +344,7 @@
       <span>Staff-operated</span>
       <span>Zero child data</span>
     </div>
-  </header>
+  </section>
 
   <!-- SEQUENCE -->
   <div class="sec-label">

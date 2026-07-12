@@ -4,6 +4,17 @@ A tool that helps kids at [Märchen Sagen Academy](https://www.marchensagen.org)
 "vague story idea in my head" to "locked script ready to shoot" — with staff guiding and
 Claude doing the heavy lifting. Built by Luca De Winne for his Claude Corps application.
 
+## The problem
+
+Kids can imagine ambitious movies. What stops them isn't creativity — it's getting from a vague
+idea to a plan they can actually shoot: holding every step in your head at once. **That's executive
+function, and for a kid with ADHD it's a wall.** I hit that wall here as a ten-year-old — reading
+and writing felt impossible, but *making* things did not. Years later I came back to teach, and
+watched the next kids hit the same wall: not a lack of imagination, but the barrier of breaking a
+big project into pieces that don't feel like drowning. So I built the tool I wish I'd had — it
+carries the planning, sequencing, and what-comes-next, so kids keep the part that's theirs:
+imagining, telling, and performing.
+
 ## ⭐ Start here
 
 **[SPEC.md](SPEC.md) is the current spec — the source of truth for what gets built.**
