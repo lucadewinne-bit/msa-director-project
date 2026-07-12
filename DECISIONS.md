@@ -123,3 +123,31 @@ interview and sound exactly like himself.
 - **What would change my mind:** If staff skip the checking step in real
   sessions, make it faster or optional.
 - **Outcome:** _pending_ — watch staff use it at MSA
+
+---
+
+**#6 — Put the app online with a serverless "middleman"** · 2026-07-12
+- **Decision:** Deploy the tool to a public link on Vercel's free tier. A
+  small serverless function (`api/chat.py`) sits between the web page and
+  Claude and holds the API key. The key lives ONLY in a Vercel setting
+  (environment variable) — never in the code, never in GitHub. No accounts
+  and no login: anyone with the link can use it, on a desktop browser.
+- **Options considered:** Keep it Mac-only (the local `server.py`, which only
+  runs on my laptop); put the key straight in the web page (rejected — anyone
+  could read it and run up my bill); a paid host.
+- **Why:** Reviewers and MSA staff need to open the tool from any computer
+  without installing anything. The middleman is what makes "public" safe: the
+  page never sees the secret key, it just asks the middleman, and the
+  middleman talks to Claude.
+- **What would change my mind:** If a public, no-login link gets abused or
+  runs up surprise cost, add a simple gate or a spending cap; if the free
+  tier's limits get in the way, revisit the host.
+- **Outcome:** Live at https://msa-director-project.vercel.app — brainstorm
+  chat and step-card generation both tested working from outside. Two lessons
+  worth keeping: (1) Vercel's Python system wanted ONE "app" file, so the
+  middleman serves both the page and Claude, like the old local server did.
+  (2) The first key I pasted into Vercel went in twice with a line break,
+  which quietly broke every request; the fix was re-pasting it as a single
+  clean line, plus code that now ignores stray line breaks. That key was
+  briefly exposed by a debug message during setup, so I deleted it and made
+  a fresh one.
