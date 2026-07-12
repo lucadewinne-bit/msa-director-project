@@ -1,0 +1,3 @@
+# server.py is the local-only dev server for Luca's Mac.
+# Vercel must not try to run it — the internet version is api/chat.py.
+app/server.py
