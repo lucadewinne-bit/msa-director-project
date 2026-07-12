@@ -9,6 +9,37 @@ Claude doing the heavy lifting. Built by Luca De Winne for his Claude Corps appl
 **[SPEC.md](SPEC.md) is the current spec — the source of truth for what gets built.**
 It describes the four-phase model: 💡 Brainstorm → 📝 Script → 🗂️ Step cards → 🎥 Film.
 
+## How it works (at a glance)
+
+Three roles — **kid, staff, and Claude** — move a story through four phases. The app covers
+the first three; filming happens in the real studio.
+
+```mermaid
+flowchart LR
+  classDef phase fill:#EAEAF2,stroke:#8A8AA0,color:#20222E,font-weight:bold
+  classDef kid fill:#F7E7CF,stroke:#A96716,color:#3A2A12
+  classDef staff fill:#CFE9E4,stroke:#1C7C71,color:#0E332F
+  classDef claude fill:#E4D9F5,stroke:#6A45B4,color:#2C1B52
+
+  P1["💡 1 - Brainstorm"]:::phase --> P2["📝 2 - Script"]:::phase --> P3["🗂️ 3 - Step cards"]:::phase --> P4["🎥 4 - Film (studio)"]:::phase
+
+  subgraph KID["🧒 Kid - the storyteller (never chats with the AI)"]
+    direction LR
+    K1["Pitches and shapes the story:<br/>hero, place, problem, fix, ending"]:::kid --> K2["Hears it read aloud,<br/>says what to change"]:::kid --> K3["Waits - staff check<br/>the cards first"]:::kid --> K4["Acts and films, guided by<br/>big read-aloud cards"]:::kid
+  end
+  subgraph STAFF["🧑‍🏫 Staff - the translator (always present)"]
+    direction LR
+    S1["Types the idea; reads questions<br/>aloud, types answers back"]:::staff --> S2["Asks for changes,<br/>then PUBLISH to lock"]:::staff --> S3["Generates and curates cards:<br/>keep / stash / fix wording"]:::staff --> S4["Runs the studio with<br/>MSA's own cameras"]:::staff
+  end
+  subgraph CLAUDE["🤖 Claude - the co-writer (never sees a name)"]
+    direction LR
+    C1["Asks one question at a time;<br/>flags STORY READY"]:::claude --> C2["Writes the full<br/>kid-friendly script"]:::claude --> C3["Splits into 5-8 PUMA cards:<br/>camera / lights / sound / edit"]:::claude --> C4["Not involved - the app stores<br/>no child media, ever"]:::claude
+  end
+```
+
+**Non-negotiable:** staff-mediated only, zero child data (no names, photos, video, audio, or
+accounts), and the app never records or stores any child's media.
+
 ## Run it locally
 
 Needs Python 3 and the `anthropic` package (`pip3 install anthropic`).
