@@ -242,8 +242,11 @@ class handler(BaseHTTPRequestHandler):
                     reply = {"text": ask_claude(data["history"])}
             except anthropic.AuthenticationError:
                 reply = {"error": "The API key doesn't work. Check the Vercel setting."}
-            except anthropic.APIError as problem:
-                reply = {"error": f"Claude had a problem: {problem.message}"}
+            except Exception as problem:  # TEMP diagnostic: surface the real cause
+                cause = problem.__cause__
+                reply = {"error": "Claude had a problem: "
+                                  f"{type(problem).__name__}: {problem} || "
+                                  f"cause: {type(cause).__name__ if cause else 'none'}: {cause}"}
 
         body = json.dumps(reply).encode()
         self.send_response(200)
