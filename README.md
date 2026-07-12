@@ -9,6 +9,21 @@ Claude doing the heavy lifting. Built by Luca De Winne for his Claude Corps appl
 **[SPEC.md](SPEC.md) is the current spec — the source of truth for what gets built.**
 It describes the four-phase model: 💡 Brainstorm → 📝 Script → 🗂️ Step cards → 🎥 Film.
 
+## Run it locally
+
+Needs Python 3 and the `anthropic` package (`pip3 install anthropic`).
+
+1. Put an Anthropic API key in `api_key.txt` at the repo root (gitignored). Without a
+   key it runs in a free "practice mode" with canned replies — handy for UI work.
+2. `python3 app/server.py`
+3. Open http://localhost:8000
+
+## Deploy
+
+Live on Vercel. `api/chat.py` is a serverless function that serves the page and proxies
+the Anthropic API; the key lives only in the `ANTHROPIC_API_KEY` env var, never in the
+repo. See [DECISIONS.md](DECISIONS.md) #6.
+
 ## The other files
 
 | File | What it is |
@@ -17,9 +32,8 @@ It describes the four-phase model: 💡 Brainstorm → 📝 Script → 🗂️ S
 | [MASTER_PLAN.md](MASTER_PLAN.md) | The living plan with the status board |
 | [DECISIONS.md](DECISIONS.md) | Every real decision, logged with reasoning |
 | [REQUIREMENTS.md](REQUIREMENTS.md) | What the application requires |
-| [CONTEXT.md](CONTEXT.md) | Who Luca is and the full-circle MSA story |
 | [VISION.md](VISION.md) | The long-term dream (parked until after July 17) |
-| [ESSAY_MATERIAL.md](ESSAY_MATERIAL.md) | Raw material for the application essays |
+| [PROMPT_ONBOARDING.md](PROMPT_ONBOARDING.md) | The engineer prompt that drove the onboarding round |
 | [PHASE1_PROMPT.md](PHASE1_PROMPT.md) / [VALIDATION_PROMPT.md](VALIDATION_PROMPT.md) | The prompts that drove the research and spec phases |
 | [directors-assistant-sketch.jsx](directors-assistant-sketch.jsx) | Early throwaway concept sketch (pre-pivot) |
 

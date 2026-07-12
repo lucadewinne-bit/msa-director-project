@@ -171,3 +171,24 @@ interview and sound exactly like himself.
 - **What would change my mind:** If the welcome view or help panel gets in the way
   of staff who already know the tool, make them more skippable or off by default.
 - **Outcome:** _pending_ — re-test with the same people.
+
+---
+
+**#8 — Separate internal working docs from the public repo** · 2026-07-12
+- **Decision:** Before sharing the repo with outside engineers, keep the public repo
+  focused on the product and the spec-driven process (SPEC, DECISIONS, MASTER_PLAN,
+  REQUIREMENTS, VISION, and the code). Move the internal working docs out: the
+  personal briefing, the essay-prep notes and drafts, and the private project-setup
+  handoff. Also scrubbed a few personal references (names/accountability routine)
+  out of MASTER_PLAN.
+- **Options considered:** Share everything as-is; rewrite git history to erase the
+  removed files from all past commits.
+- **Why:** A public repo read by reviewers, engineers, and product folks should show
+  the work and the thinking — not personal details or the meta-strategy behind the
+  written answers. The origin story that matters (a dyslexic kid who came back to
+  build the tool he wishes he'd had) still lives in the README and Essay 1.
+- **What would change my mind:** If deeper privacy is ever needed, rewrite history to
+  remove the files entirely; for now the repo was already public, so we removed them
+  going forward.
+- **Outcome:** _done_ — repo trimmed to the product + process; internal docs kept
+  privately.

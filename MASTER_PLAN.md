@@ -59,7 +59,7 @@ Submitting July 15–16 (not the deadline day) is the target.
   runbook. Evening: **Essay 1 first draft** (community impact) while build energy
   is high — do not leave both essays to Day 10.
 - Day 8: freeze features. Triage by "bad vs. sad": FIX what is broken (bad);
-  SHIP what is merely disappointing (sad). Dad's engineers do a review pass
+  SHIP what is merely disappointing (sad). Advisor engineers do a review pass
   (advice only). Prepare the 60-second demo. Run the TEST_CHECKLIST end to end.
 
 ### Days 9–10 (Tue Jul 14 – Wed Jul 15): Test, essays, polish
@@ -73,10 +73,10 @@ Submitting July 15–16 (not the deadline day) is the target.
 
 ### Day 11 (Thu Jul 16): Submit
 - Run the pre-submission checklist in REQUIREMENTS.md top to bottom.
-- Dad does a second-pair-of-eyes pass. Submit. Celebrate properly.
+- A second-pair-of-eyes review pass. Submit. Celebrate properly.
 
-## DAILY OPERATING SYSTEM (this is how the plan survives ADHD)
-- **Fixed daily kickoff:** 15 minutes with Dad, same time every day. Its only job
+## DAILY OPERATING SYSTEM (how this plan actually gets executed)
+- **Fixed daily kickoff:** 15 minutes, same time every day. Its only job
   is to open the Claude Project chat. Once the chat is open, momentum exists.
 - In-chat: Claude asks "what got done / how much time now?" → gives ONE next action.
 - End of each session: Claude updates the STATUS BOARD; Luca commits to GitHub
@@ -86,7 +86,7 @@ Submitting July 15–16 (not the deadline day) is the target.
   (1) revert to the last working commit; (2) open a FRESH chat and describe the
   problem from scratch in plain words; (3) if still stuck, change the approach
   entirely, or park it and take the next milestone; (4) only after all that, ask
-  Dad or an engineer. Never push past 45 minutes without changing something.
+  an advisor or engineer. Never push past 45 minutes without changing something.
   Getting stuck is normal; thrashing is the only real enemy.
 - Falling behind a day is normal. The recovery move is always the same: shrink
   scope (consult the CUT LIST below and VISION.md's parking lot), never extend
