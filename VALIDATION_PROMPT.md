@@ -22,10 +22,9 @@ differentiation vs. a typical CS-adjacent applicant. State what would make you
 shortlist or skip.
 
 **PASS 2 — The ownership interrogation.** Role-play the 25-minute interviewer and
-Super Day panel. The candidate had help: a parent set up this planning system and
-company engineers advised. Generate the 8 hardest questions you'd ask to test whether
+Super Day panel. Generate the 8 hardest questions you'd ask to test whether
 the work is genuinely his, then assess: does the process these files enforce (decision
-log, one-step coaching, his hands on the keyboard, a spec he must defend) produce a
+log, one-step coaching, hands on the keyboard, a spec he must defend) produce a
 candidate who survives those questions? Frame this through the lens Anthropic leaders
 publicly hire for (per Fiona Fung, manager of the Claude Code/Cowork teams): agency
 and accountability, growth mindset, creative building, and the ability to verify and
