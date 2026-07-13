@@ -106,7 +106,7 @@
     line-height: 1.02; letter-spacing: -0.02em; margin: 0 0 14px;
     text-wrap: balance; font-weight: 800;
   }
-  .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); color: var(--muted); max-width: 60ch; margin: 0 0 26px; }
+  .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); color: var(--muted); margin: 0 0 26px; }
 
   .northstar {
     position: relative;
@@ -116,7 +116,6 @@
     border-radius: 12px;
     padding: 20px 24px;
     box-shadow: var(--shadow);
-    max-width: 74ch;
   }
   .northstar .eyebrow { display: block; margin-bottom: 8px; }
   .northstar p { margin: 0; font-size: 1.06rem; }
@@ -135,7 +134,7 @@
 
   /* ---- problem hero: the hook + the gap / bridge ---- */
   h1.hook { font-size: clamp(2.4rem, 6.2vw, 3.9rem); line-height: 1.0; margin-bottom: 18px; }
-  .lede.big { font-size: clamp(1.08rem, 1.9vw, 1.36rem); color: var(--ink); max-width: 62ch; }
+  .lede.big { font-size: clamp(1.08rem, 1.9vw, 1.36rem); color: var(--ink); }
   .lede.big strong { color: var(--key); font-weight: 700; }
   .gap {
     margin: 30px 0 20px; background: var(--panel); border: 1px solid var(--line);
@@ -432,19 +431,19 @@
     <div class="panel">
       <h3>Non-negotiable safety</h3>
       <ul>
-        <li><b>Staff-mediated</b> only — no direct child–AI chat.</li>
-        <li><b>Zero child data</b>: no names, photos, video, audio, or accounts.</li>
-        <li>Reading level ~age 6; encouraging, film-set language.</li>
-        <li>Never records or stores any child's media — permanent, not just V1.</li>
+        <li><b>Staff-mediated</b> — kids never chat with the AI directly.</li>
+        <li><b>Zero child data</b> — no names, photos, video, audio, or accounts.</li>
+        <li>Written at about a six-year-old's reading level.</li>
+        <li>The app never records or stores a child's media, ever.</li>
       </ul>
     </div>
     <div class="panel">
       <h3>How it's built</h3>
       <ul>
-        <li>One page, two modes: <b>staff</b> (chat + curation) and <b>kid</b> (big cards).</li>
-        <li>The page asks a small serverless <b>middleman</b>, which holds the key and calls the Claude API.</li>
-        <li>Session state lives in the page — nothing about children is stored anywhere.</li>
-        <li>Live on Vercel; the key sits only in an environment variable.</li>
+        <li>One page, two modes — <b>staff</b> (chat and curation) and <b>kid</b> (big cards).</li>
+        <li>A small serverless <b>middleman</b> holds the key and calls Claude.</li>
+        <li>Session state lives in the page — nothing about kids is stored.</li>
+        <li>Hosted on Vercel; the key sits only in an environment variable.</li>
       </ul>
     </div>
   </div>
