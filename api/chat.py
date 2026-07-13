@@ -205,6 +205,45 @@ def ask_claude_for_cards(history):
     return json.loads(text)["cards"]
 
 
+SCRIPT_INSTRUCTIONS = """You are the screenplay writer inside the MSA Script Builder,
+used at Märchen Sagen Academy where kids ages 4-10 make short films with staff
+(green screen and stop-motion, small indoor studio).
+
+You will get a brainstorm conversation about a story the kids just built. Write the
+full movie SCRIPT for it — the whole story turned into a script they can film.
+
+Write it scene by scene, in order. For each scene give:
+- A short scene heading (where we are).
+- What we SEE: the action, simple and filmable.
+- What each character SAYS out loud: their lines.
+
+Rules you must always follow:
+- Start with a fun TITLE for the movie.
+- Keep everything at about a 6-year-old's reading level. Short sentences.
+- Encouraging and playful; use film-set words when they fit.
+- Plain text only. Never use markdown symbols like ** or #.
+- Never mention children's names or personal details.
+- Keep every scene filmable in a small studio with green screen or stop-motion.
+- Follow any setup notes in the conversation (the kids' age, the movie length, the
+  number of characters) — match the reading level, length, and cast to them."""
+
+
+def ask_claude_for_script(history):
+    """Send the brainstorm to Claude and get back the full movie script as text."""
+    client = anthropic.Anthropic(api_key=read_api_key())
+    response = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=16000,
+        thinking={"type": "adaptive"},
+        system=SCRIPT_INSTRUCTIONS,
+        messages=history + [{
+            "role": "user",
+            "content": "Now write the full movie script for this story.",
+        }],
+    )
+    return "".join(block.text for block in response.content if block.type == "text")
+
+
 def read_index_html():
     """Load the web page (app/index.html) so we can serve it."""
     here = Path(__file__).resolve().parent
@@ -231,18 +270,23 @@ class handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         data = json.loads(self.rfile.read(length))
 
-        wants_cards = data.get("want") == "cards"
+        want = data.get("want")
 
         if read_api_key() is None:
             # No key set -> free practice mode with pretend answers
-            if wants_cards:
+            if want == "cards":
                 reply = {"cards": PRACTICE_CARDS}
+            elif want == "script":
+                reply = {"text": "🎭 PRACTICE MODE (free, not real Claude)\n\n"
+                                 "The full movie script appears here once the real key is connected."}
             else:
                 reply = {"text": practice_reply(data["history"])}
         else:
             try:
-                if wants_cards:
+                if want == "cards":
                     reply = {"cards": ask_claude_for_cards(data["history"])}
+                elif want == "script":
+                    reply = {"text": ask_claude_for_script(data["history"])}
                 else:
                     reply = {"text": ask_claude(data["history"])}
             except anthropic.AuthenticationError:
