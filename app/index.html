@@ -589,6 +589,21 @@
   #setupStart { flex: 1; }
   #setupSkip { background: transparent; border: 1px solid var(--slate); color: var(--slate); }
   #setupSkip:hover { background: var(--paper); }
+
+  /* Script view — the full movie script, read-aloud friendly */
+  #scriptMode { position: fixed; inset: 0; background: var(--paper); display: none; flex-direction: column; z-index: 16; }
+  #scriptMode.open { display: flex; }
+  #scriptScroll { flex: 1; overflow-y: auto; padding: 24px 28px 110px; }
+  #scriptText {
+    background: var(--ivory); border: 1px solid var(--line); border-left: 4px solid var(--kraft);
+    border-radius: 12px; padding: 22px 26px; max-width: 760px; margin: 0 auto;
+    font-size: 1.15em; line-height: 1.7; white-space: pre-wrap; color: var(--ink);
+  }
+  #scriptFooter {
+    position: absolute; bottom: 0; left: 0; right: 0; background: var(--ivory);
+    border-top: 1px solid var(--line); padding: 14px 28px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+  }
+  #scriptHomeButton:hover { background: var(--paper); }
 </style>
 </head>
 <body>
@@ -684,7 +699,21 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
     <div id="stashList"></div>
   </div>
   <div id="curateFooter">
+    <button id="regenCardsButton" type="button" style="background:transparent;border:1px solid var(--slate);color:var(--slate);">🔄 Fresh cards</button>
     <button id="showKidsButton">Show the kids ▶</button>
+  </div>
+</div>
+
+<!-- Script view: the full movie script (read-aloud) -->
+<div id="scriptMode">
+  <header>📄 The Script <button id="scriptHomeButton" title="Home" style="float:right;background:transparent;font-size:0.7em;">🏠</button></header>
+  <div id="scriptScroll">
+    <div id="scriptText"></div>
+  </div>
+  <div id="scriptFooter">
+    <button id="scriptHearButton" style="background:transparent;border:1px solid var(--kraft);">Hear it 🔊</button>
+    <button id="scriptCardsButton">Make step cards 🗂️ ▶</button>
+    <button id="scriptBackButton" style="background:transparent;border:1px solid var(--slate);color:var(--slate);">Back to chat</button>
   </div>
 </div>
 
@@ -838,6 +867,12 @@ function showStoryReady() {
   invite.className = "bigNext";
   invite.textContent = "🎉 Your story is ready, director! Next step:";
 
+  const scriptGo = document.createElement("button");
+  scriptGo.textContent = "📄 Write the script";
+  scriptGo.style.background = "var(--kraft)";
+  scriptGo.style.color = "var(--ink)";
+  scriptGo.addEventListener("click", () => { writeScript(); });
+
   const go = document.createElement("button");
   go.textContent = "Make my step cards 🗂️";
   go.addEventListener("click", () => {
@@ -845,7 +880,7 @@ function showStoryReady() {
     cardsButton.click();
   });
 
-  invite.appendChild(go);
+  invite.append(scriptGo, go);
   messagesBox.appendChild(invite);
   messagesBox.scrollTop = messagesBox.scrollHeight;
 
@@ -1249,16 +1284,7 @@ document.getElementById("setupSkip").addEventListener("click", () => { setupCont
 
 showHomePage();
 
-cardsButton.addEventListener("click", async () => {
-  if (!storyReady) {
-    showBubble(
-      "Not yet, director! 🎬 Finish brainstorming the whole story first — " +
-      "hero, place, problem, fix, and ending. When it's ready, this button will glow!",
-      "claude"
-    );
-    return;
-  }
-
+async function generateCards() {
   cardsButton.disabled = true;
   button.disabled = true;
   const waiting = showBubble("🗂️ Making your step cards… (this takes a moment)", "claude");
@@ -1286,6 +1312,88 @@ cardsButton.addEventListener("click", async () => {
 
   cardsButton.disabled = false;
   button.disabled = false;
+}
+
+cardsButton.addEventListener("click", () => {
+  if (!storyReady) {
+    showBubble(
+      "Not yet, director! 🎬 Finish brainstorming the whole story first — " +
+      "hero, place, problem, fix, and ending. When it's ready, this button will glow!",
+      "claude"
+    );
+    return;
+  }
+  // Cards already made? Just reopen them — no remaking, no waiting.
+  if (cards.length > 0) {
+    openCurateMode();
+    return;
+  }
+  generateCards();
+});
+
+// Regenerate cards from the current story (quick confirm so a misclick can't wipe edits)
+let regenArmed = false;
+const regenCardsButton = document.getElementById("regenCardsButton");
+regenCardsButton.addEventListener("click", () => {
+  if (!regenArmed) {
+    regenCardsButton.textContent = "Sure? remakes all";
+    regenArmed = true;
+    setTimeout(() => { regenCardsButton.textContent = "🔄 Fresh cards"; regenArmed = false; }, 3000);
+    return;
+  }
+  regenArmed = false;
+  regenCardsButton.textContent = "🔄 Fresh cards";
+  curateMode.classList.remove("open");
+  cards = [];
+  generateCards();
+});
+
+// ---- Script view: write the full movie script and show it (read-aloud) ----
+const scriptMode = document.getElementById("scriptMode");
+let scriptText = "";
+
+async function writeScript() {
+  setJourneyPhase("script");
+  button.disabled = true;
+  const waiting = showBubble("📄 Writing the script…", "claude");
+  try {
+    const scriptAsk = history.concat([{
+      role: "user",
+      content: "Now write the full movie SCRIPT for this story. Go scene by scene, in order. " +
+               "For each scene say what we SEE (the action) and what each character SAYS out loud. " +
+               "Start with a title. Keep it at the kids' reading level, plain text, no markdown symbols."
+    }]);
+    const response = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: scriptAsk }),
+    });
+    const reply = await response.json();
+    waiting.remove();
+    if (reply.error) { showBubble("⚠️ " + reply.error, "error"); button.disabled = false; return; }
+    scriptText = (reply.text || "").replace("[STORY READY]", "").trim();
+    document.getElementById("scriptText").textContent = scriptText;
+    scriptMode.classList.add("open");
+  } catch {
+    waiting.remove();
+    showBubble("⚠️ Couldn't reach the server. Is server.py still running?", "error");
+  }
+  button.disabled = false;
+}
+
+document.getElementById("scriptBackButton").addEventListener("click", () => {
+  speechSynthesis.cancel();
+  scriptMode.classList.remove("open");
+});
+document.getElementById("scriptHearButton").addEventListener("click", () => readAloud(scriptText));
+document.getElementById("scriptHomeButton").addEventListener("click", () => {
+  speechSynthesis.cancel();
+  scriptMode.classList.remove("open");
+  showHomePage();
+});
+document.getElementById("scriptCardsButton").addEventListener("click", () => {
+  scriptMode.classList.remove("open");
+  cardsButton.click();
 });
 </script>
 
