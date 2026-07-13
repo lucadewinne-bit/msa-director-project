@@ -15,18 +15,18 @@ Submitting July 15–16 (not the deadline day) is the target.
 | Item                          | Status      | Notes |
 |-------------------------------|-------------|-------|
 | AI Fluency course             | ✅ DONE     | completed July 4 — save proof of completion for the certificate doc |
-| Claude 101 course             | NOT STARTED |       |
-| Certificates combined (1 doc) | NOT STARTED |       |
+| Claude 101 course             | ✅ DONE     | completed |
+| Certificates combined (1 doc) | IN PROGRESS | earned AI Fluency, Claude 101, and a Google certificate — bundle into one PDF to upload |
 | GitHub account + repo         | ✅ DONE     | public repo: github.com/lucadewinne-bit/msa-director-project |
 | Phase 1: research + spec      | ✅ DONE     | SPEC.md written and committed — the source of truth |
 | Staff discovery conversation  | NOT STARTED | ask staff for 15 min EARLY this week |
-| Phase 2: build V1             | IN PROGRESS | V1 nearly feature-complete: brainstorm (Show & Tell rules) → story-ready glow → PUMA step cards (camera/lights/sound/CapCut) → staff curation with Stash → kid slide mode with read-aloud → save + Google-Slides-style home page. Safety tested (redirects + name rule). Remaining: staff runbook, feedback form, real MSA test |
+| Phase 2: build V1             | ✅ DONE     | V1 shipped and DEPLOYED publicly on Vercel (msa-director-project.vercel.app): brainstorm → story-ready glow → PUMA step cards (camera/lights/sound/CapCut) → staff curation with Stash → kid slide mode with read-aloud → save + home page → welcome/journey/help onboarding. Remaining (own rows): staff runbook, real MSA test |
 | Test with kids/staff at MSA   | NOT STARTED | schedule the session by Day 3 |
 | Staff runbook (1 page)        | NOT STARTED |       |
-| Essay 1: community impact     | DRAFT DONE  | in essays/ folder — final polish pass before submitting; "shipped at MSA" line must be TRUE first (do the test!) |
-| Essay 2: setback/learning     | DRAFT DONE  | in essays/ folder — apply the polish note: name MY mistake explicitly |
-| Resume polished               | NOT STARTED |       |
-| LinkedIn polished             | NOT STARTED |       |
+| Essay 1: community impact     | ✅ DONE     | final version done (kept private, out of the public repo) |
+| Essay 2: setback/learning     | ✅ DONE     | final version done (kept private, out of the public repo) |
+| Resume polished               | ✅ DONE     | done |
+| LinkedIn polished             | ✅ DONE     | done |
 | Final review + SUBMIT         | NOT STARTED | target July 15–16 |
 
 ## PHASE MAP (11 days)
