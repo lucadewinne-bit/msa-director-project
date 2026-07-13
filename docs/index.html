@@ -266,8 +266,8 @@
   }
   .panel h3 { margin: 0 0 12px; font-size: 1.02rem; letter-spacing: .01em; }
   .panel .tick { font-family: ui-monospace, Menlo, monospace; font-size: .68rem; color: var(--key); }
-  .panel ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
-  .panel li { display: flex; gap: 10px; font-size: .9rem; color: var(--ink); }
+  .panel ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 11px; }
+  .panel li { display: flex; gap: 10px; font-size: .9rem; line-height: 1.5; color: var(--ink); }
   .panel li::before { content: "▪"; color: var(--key); flex: none; }
   .panel li b { font-weight: 700; }
   .flowline { font-family: ui-monospace, Menlo, monospace; font-size: .82rem; color: var(--ink); line-height: 1.9; }
@@ -311,7 +311,7 @@
     <h1 class="hook">The idea was never the hard part.</h1>
     <p class="lede big">Kids can picture ambitious movies. What stops them isn't imagination — it's
       getting from a vague idea to a plan they can actually shoot, holding every step in your head at
-      once. That's <strong>executive function</strong>, and for a kid with ADHD it's a wall. I know —
+      once. That's <strong>executive functioning</strong>, and for a kid with ADHD it's a wall. I know —
       I was that kid, at this academy. The Script Builder carries that load, so kids keep the part
       that's theirs: imagining, telling, performing.</p>
 
@@ -319,7 +319,7 @@
       <div class="gap-row">
         <div class="gnode"><span class="gemoji">💡</span><b>A vague idea</b><span>in a kid's head</span></div>
         <span class="garrow">→</span>
-        <div class="gnode wall"><span class="gemoji">🧱</span><b>The wall</b><span>start it · sequence it · hold the whole plan at once — executive function</span></div>
+        <div class="gnode wall"><span class="gemoji">🧱</span><b>The wall</b><span>start it · sequence it · hold the whole plan at once — executive functioning</span></div>
         <span class="garrow">→</span>
         <div class="gnode"><span class="gemoji">🎬</span><b>A finished movie</b><span>they wrote and filmed</span></div>
       </div>
@@ -423,27 +423,27 @@
       <h3>The handoff — always</h3>
       <p class="flowline"><span class="c">Claude</span> ⇄ <span class="b">Staff</span> ⇄ <span class="a">Kids</span></p>
       <ul>
-        <li>Staff type and read every question aloud.</li>
-        <li>Kids decide the story; they never chat with the AI directly.</li>
-        <li>Claude never sees a child's name or speaks to a child.</li>
+        <li>Staff type and read every prompt aloud.</li>
+        <li>Kids decide the story, start to finish.</li>
+        <li>Claude never sees a name or speaks to a child.</li>
       </ul>
     </div>
     <div class="panel">
       <h3>Non-negotiable safety</h3>
       <ul>
-        <li><b>Staff-mediated</b> — kids never chat with the AI directly.</li>
-        <li><b>Zero child data</b> — no names, photos, video, audio, or accounts.</li>
-        <li>Written at about a six-year-old's reading level.</li>
-        <li>The app never records or stores a child's media, ever.</li>
+        <li>Kids never chat with the AI directly.</li>
+        <li>No names, photos, video, audio, or accounts.</li>
+        <li>Written for about a six-year-old reader.</li>
+        <li>No child's media is ever recorded or stored.</li>
       </ul>
     </div>
     <div class="panel">
       <h3>How it's built</h3>
       <ul>
-        <li>One page, two modes — <b>staff</b> (chat and curation) and <b>kid</b> (big cards).</li>
-        <li>A small serverless <b>middleman</b> holds the key and calls Claude.</li>
-        <li>Session state lives in the page — nothing about kids is stored.</li>
-        <li>Hosted on Vercel; the key sits only in an environment variable.</li>
+        <li>One page, two modes — staff and kid.</li>
+        <li>A small serverless middleman holds the key.</li>
+        <li>It calls Claude and returns the reply.</li>
+        <li>Hosted on Vercel; state stays in the page.</li>
       </ul>
     </div>
   </div>

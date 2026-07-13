@@ -7,8 +7,8 @@ Claude doing the heavy lifting. Built by Luca De Winne for his Claude Corps appl
 ## The problem
 
 Kids can imagine ambitious movies. What stops them isn't creativity — it's getting from a vague
-idea to a plan they can actually shoot: holding every step in your head at once. **That's executive
-function, and for a kid with ADHD it's a wall.** I hit that wall here as a ten-year-old — reading
+idea to a plan they can actually shoot: holding every step in your head at once. **That's executive functioning, and for a kid with ADHD it's a
+wall.** I hit that wall here as a ten-year-old — reading
 and writing felt impossible, but *making* things did not. Years later I came back to teach, and
 watched the next kids hit the same wall: not a lack of imagination, but the barrier of breaking a
 big project into pieces that don't feel like drowning. So I built the tool I wish I'd had — it
