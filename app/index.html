@@ -1357,16 +1357,10 @@ async function writeScript() {
   button.disabled = true;
   const waiting = showBubble("📄 Writing the script…", "claude");
   try {
-    const scriptAsk = history.concat([{
-      role: "user",
-      content: "Now write the full movie SCRIPT for this story. Go scene by scene, in order. " +
-               "For each scene say what we SEE (the action) and what each character SAYS out loud. " +
-               "Start with a title. Keep it at the kids' reading level, plain text, no markdown symbols."
-    }]);
     const response = await fetch("/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ history: scriptAsk }),
+      body: JSON.stringify({ want: "script", history: history }),
     });
     const reply = await response.json();
     waiting.remove();
