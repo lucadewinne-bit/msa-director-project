@@ -566,6 +566,29 @@
     margin-top: 8px;
   }
   .qa .hearQa:hover { background: var(--paper); }
+
+  /* ---- New-movie setup screen (age / length / characters) ---- */
+  #setupMode {
+    position: fixed; inset: 0; background: rgba(25,25,25,0.45);
+    display: none; align-items: center; justify-content: center; z-index: 45; padding: 20px;
+  }
+  #setupMode.open { display: flex; }
+  #setupCard {
+    background: var(--ivory); border-radius: 16px; max-width: 460px; width: 100%;
+    padding: 26px 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.4); max-height: 90vh; overflow-y: auto;
+  }
+  #setupCard h2 { font-size: 1.5em; margin: 0 0 6px 0; }
+  .setupNote { color: var(--slate); font-size: 0.98em; margin: 0 0 8px 0; }
+  #setupCard label { display: block; font-size: 1.05em; color: var(--ink); margin: 16px 0 5px; font-weight: 600; }
+  #setupCard input, #setupCard select {
+    width: 100%; font-family: inherit; font-size: 1.05em; padding: 12px 14px;
+    border-radius: 12px; border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  }
+  #setupCard input:focus, #setupCard select:focus { outline: 2px solid var(--clay); border-color: var(--clay); }
+  .setupButtons { display: flex; gap: 10px; margin-top: 24px; }
+  #setupStart { flex: 1; }
+  #setupSkip { background: transparent; border: 1px solid var(--slate); color: var(--slate); }
+  #setupSkip:hover { background: var(--paper); }
 </style>
 </head>
 <body>
@@ -709,6 +732,29 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
   </div>
 </div>
 
+<!-- New-movie setup: quick choices that tune the story to the kids -->
+<div id="setupMode">
+  <div id="setupCard">
+    <h2>🎬 New movie — a few quick choices</h2>
+    <p class="setupNote">This helps Claude match the story to your kids. Skip anything you're not sure about.</p>
+    <label for="setupAge">How old are the kids?</label>
+    <input id="setupAge" type="text" inputmode="numeric" placeholder="e.g. 5  (a range like 4-6 is fine)" autocomplete="off">
+    <label for="setupLength">How long should the movie be?</label>
+    <select id="setupLength">
+      <option value="">No preference</option>
+      <option value="about 1 minute">About 1 minute</option>
+      <option value="2 to 3 minutes">2 to 3 minutes</option>
+      <option value="about 5 minutes">About 5 minutes</option>
+    </select>
+    <label for="setupChars">How many characters (kids acting)?</label>
+    <input id="setupChars" type="number" min="1" max="12" placeholder="e.g. 4" autocomplete="off">
+    <div class="setupButtons">
+      <button id="setupStart">Start ▶</button>
+      <button id="setupSkip" type="button">Skip</button>
+    </div>
+  </div>
+</div>
+
 <form id="chatForm">
   <input id="chatInput" placeholder="Type here, then press Send…" autocomplete="off">
   <button id="sendButton">Send 🎥</button>
@@ -740,7 +786,9 @@ form.addEventListener("submit", async (event) => {
   if (!text) return;
 
   showBubble(text, "staff");
-  history.push({ role: "user", content: text });
+  // On the first message, quietly prepend the setup so Claude tunes to the kids.
+  const firstContent = (history.length === 0 && setupContext) ? setupContext + text : text;
+  history.push({ role: "user", content: firstContent });
   input.value = "";
   button.disabled = true;
   const waiting = showBubble("🎬 Thinking…", "claude");
@@ -1056,18 +1104,13 @@ function showHomePage() {
 }
 
 document.getElementById("newStoryButton").addEventListener("click", () => {
-  homePage.classList.remove("open");
-  setJourneyPhase("brainstorm");
-  input.focus();
+  openSetup(null);
 });
 
 // Starter ideas: click one and the brainstorm begins with that idea
 for (const starter of document.querySelectorAll(".starter")) {
   starter.addEventListener("click", () => {
-    homePage.classList.remove("open");
-    setJourneyPhase("brainstorm");
-    input.value = starter.dataset.idea;
-    form.requestSubmit();
+    openSetup(starter.dataset.idea);
   });
 }
 
@@ -1149,6 +1192,60 @@ for (const btn of document.querySelectorAll(".hearQa")) {
     readAloud(answer.dataset.say || answer.textContent);
   });
 }
+
+// ---- New-movie setup: age / length / characters, fed to the AI (user feedback) ----
+let setupContext = "";
+let pendingStarterIdea = null;
+const setupMode = document.getElementById("setupMode");
+
+function openSetup(starterIdea) {
+  pendingStarterIdea = starterIdea || null;
+  document.getElementById("setupAge").value = "";
+  document.getElementById("setupChars").value = "";
+  document.getElementById("setupLength").value = "";
+  setupMode.classList.add("open");
+  setTimeout(() => document.getElementById("setupAge").focus(), 40);
+}
+
+function buildSetupContext() {
+  const age = document.getElementById("setupAge").value.trim();
+  const length = document.getElementById("setupLength").value.trim();
+  const chars = document.getElementById("setupChars").value.trim();
+  const parts = [];
+  if (age) parts.push("The children are about " + age + " years old — match your vocabulary, sentence length, and ideas to that age.");
+  if (length) parts.push("Aim for a finished movie " + length + " long.");
+  if (chars) parts.push("Plan for about " + chars + " characters or roles for the kids to play.");
+  setupContext = parts.length
+    ? "[Setup for this movie — follow this in the whole story and the step cards: " + parts.join(" ") + "]\n\n"
+    : "";
+}
+
+function resetConversation() {
+  history.length = 0;
+  cards = [];
+  storyReady = false;
+  cardsButton.classList.remove("ready");
+  cardsButton.classList.add("waiting");
+  messagesBox.innerHTML = "";
+  showBubble("What's your movie idea? 🎬 Type it and let's make a story!", "claude");
+}
+
+function startMovie() {
+  setupMode.classList.remove("open");
+  homePage.classList.remove("open");
+  resetConversation();
+  setJourneyPhase("brainstorm");
+  if (pendingStarterIdea) {
+    input.value = pendingStarterIdea;
+    pendingStarterIdea = null;
+    form.requestSubmit();
+  } else {
+    input.focus();
+  }
+}
+
+document.getElementById("setupStart").addEventListener("click", () => { buildSetupContext(); startMovie(); });
+document.getElementById("setupSkip").addEventListener("click", () => { setupContext = ""; startMovie(); });
 
 showHomePage();
 
