@@ -19,9 +19,9 @@ Submitting July 15–16 (not the deadline day) is the target.
 | Certificates combined (1 doc) | IN PROGRESS | earned AI Fluency, Claude 101, and a Google certificate — bundle into one PDF to upload |
 | GitHub account + repo         | ✅ DONE     | public repo: github.com/lucadewinne-bit/msa-director-project |
 | Phase 1: research + spec      | ✅ DONE     | SPEC.md written and committed — the source of truth |
-| Staff discovery conversation  | NOT STARTED | ask staff for 15 min EARLY this week |
+| Staff discovery conversation  | SCHEDULED   | folded into the MSA staff session starting July 13 |
 | Phase 2: build V1             | ✅ DONE     | V1 shipped and DEPLOYED publicly on Vercel (msa-director-project.vercel.app): brainstorm → story-ready glow → PUMA step cards (camera/lights/sound/CapCut) → staff curation with Stash → kid slide mode with read-aloud → save + home page → welcome/journey/help onboarding. Remaining (own rows): staff runbook, real MSA test |
-| Test with kids/staff at MSA   | NOT STARTED | schedule the session by Day 3 |
+| Test with kids/staff at MSA   | SCHEDULED   | Luca runs it with MSA staff starting July 13 |
 | Staff runbook (1 page)        | NOT STARTED |       |
 | Essay 1: community impact     | ✅ DONE     | final version done (kept private, out of the public repo) |
 | Essay 2: setback/learning     | ✅ DONE     | final version done (kept private, out of the public repo) |
