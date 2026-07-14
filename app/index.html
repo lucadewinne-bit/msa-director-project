@@ -604,6 +604,21 @@
     border-top: 1px solid var(--line); padding: 14px 28px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
   }
   #scriptHomeButton:hover { background: var(--paper); }
+
+  /* Script button on a reopened movie, + backup/restore tools on the home screen */
+  #scriptViewButton {
+    position: absolute; top: 16px; left: 120px; background: transparent;
+    font-size: 1.7em; padding: 4px 10px; display: none;
+  }
+  #scriptViewButton:hover { background: rgba(255,255,255,0.08); }
+  .homeBottomHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .homeBottomHead h2 { margin: 0; }
+  .backupTools { display: flex; gap: 8px; }
+  .backupTools button {
+    background: transparent; border: 1px solid var(--line); color: var(--slate);
+    font-size: 0.9em; padding: 8px 14px;
+  }
+  .backupTools button:hover { background: var(--paper); color: var(--ink); }
 </style>
 </head>
 <body>
@@ -670,7 +685,14 @@
     </div>
   </div>
   <div class="homeBottom">
-    <h2>Your movies</h2>
+    <div class="homeBottomHead">
+      <h2>Your movies</h2>
+      <div class="backupTools">
+        <button id="exportMoviesButton" type="button" title="Download a backup file of all your movies">⬇️ Back up</button>
+        <button id="importMoviesButton" type="button" title="Load movies from a backup file">⬆️ Restore</button>
+        <input id="importFile" type="file" accept="application/json,.json" style="display:none">
+      </div>
+    </div>
     <div id="movieGrid"></div>
   </div>
 </div>
@@ -735,6 +757,7 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
   </div>
   <button id="cardHomeButton" title="Home">🏠</button>
   <button id="editCardsButton" title="Check / fix the cards">✏️</button>
+  <button id="scriptViewButton" title="See the script">📄</button>
 </div>
 
 <!-- Help panel (feedback #3): simple Q&A for staff and kids, kids' answers read aloud -->
@@ -952,6 +975,7 @@ function openCardMode() {
   setJourneyPhase("cards");
   cardMode.classList.add("open");
   cardsButton.classList.remove("ready");   // job done — stop glowing
+  document.getElementById("scriptViewButton").style.display = scriptText ? "block" : "none";
   showCurrentCard();
 }
 
@@ -1130,6 +1154,7 @@ function showHomePage() {
     card.addEventListener("click", () => {
       homePage.classList.remove("open");
       cards = movie.cards;
+      scriptText = movie.script || "";
       storyReady = true;
       openCardMode();
     });
@@ -1171,7 +1196,7 @@ document.getElementById("saveOk").addEventListener("click", () => {
 
   // Same name = replace the old version
   const movies = loadMovies().filter(m => m.name !== name);
-  movies.push({ name: name, cards: cards });
+  movies.push({ name: name, cards: cards, script: scriptText });
   localStorage.setItem("msaMovies", JSON.stringify(movies));
 
   saveBar.classList.remove("open");
@@ -1366,8 +1391,7 @@ async function writeScript() {
     waiting.remove();
     if (reply.error) { showBubble("⚠️ " + reply.error, "error"); button.disabled = false; return; }
     scriptText = (reply.text || "").replace("[STORY READY]", "").trim();
-    document.getElementById("scriptText").textContent = scriptText;
-    scriptMode.classList.add("open");
+    openScriptMode();
   } catch {
     waiting.remove();
     showBubble("⚠️ Couldn't reach the server. Is server.py still running?", "error");
@@ -1388,6 +1412,52 @@ document.getElementById("scriptHomeButton").addEventListener("click", () => {
 document.getElementById("scriptCardsButton").addEventListener("click", () => {
   scriptMode.classList.remove("open");
   cardsButton.click();
+});
+
+function openScriptMode() {
+  document.getElementById("scriptText").textContent = scriptText;
+  scriptMode.classList.add("open");
+}
+document.getElementById("scriptViewButton").addEventListener("click", openScriptMode);
+
+// ---- Back up / restore all movies (a file copy, portable across computers) ----
+function exportMovies() {
+  const data = localStorage.getItem("msaMovies") || "[]";
+  const blob = new Blob([data], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "msa-movies-backup.json";
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function importMovies(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let incoming;
+    try { incoming = JSON.parse(reader.result); } catch { incoming = null; }
+    if (!Array.isArray(incoming)) {
+      alert("That file didn't look like a movies backup.");
+      return;
+    }
+    const byName = {};
+    for (const movie of loadMovies()) byName[movie.name] = movie;
+    for (const movie of incoming) if (movie && movie.name) byName[movie.name] = movie;
+    localStorage.setItem("msaMovies", JSON.stringify(Object.values(byName)));
+    showHomePage();
+    alert("Movies restored! ✅");
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById("exportMoviesButton").addEventListener("click", exportMovies);
+document.getElementById("importMoviesButton").addEventListener("click", () => {
+  document.getElementById("importFile").click();
+});
+document.getElementById("importFile").addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) importMovies(file);
+  event.target.value = "";   // let the same file be re-imported later
 });
 </script>
 
