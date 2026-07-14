@@ -192,3 +192,81 @@ interview and sound exactly like himself.
   going forward.
 - **Outcome:** _done_ — repo trimmed to the product + process; internal docs kept
   privately.
+
+---
+
+**#9 — Tune the story to the kids' age (plus length + cast) at the start** · 2026-07-13
+- **Decision:** Starting a new movie now opens a quick setup — the kids' age, how long
+  the movie should be, and how many characters — and feeds it to Claude so the tone,
+  vocabulary, and plan match the room. A 4-year-old and a 10-year-old are very
+  different. It's optional; you can skip it.
+- **Options considered:** One fixed reading level for everyone (what it did before);
+  asking mid-conversation instead of up front.
+- **Why:** First testing (with my siblings) showed the content leaned to one age. Age
+  is the biggest lever on whether it lands, and it's cheap to capture once at the
+  start. I verified live that the same idea gives a much simpler reply for age 4 and a
+  richer one for age 10.
+- **What would change my mind:** If staff skip it every time, make it lighter or infer
+  the level from the conversation.
+- **Outcome:** _live_.
+
+**#10 — Make saved work safe and portable** · 2026-07-13
+- **Decision:** Three fixes so nobody loses work: (1) the script is saved with the
+  movie and comes back when you reopen it; (2) the Step cards button reopens existing
+  cards instead of slowly remaking them; (3) a Back up / Restore pair on the home
+  screen exports all movies to a file and loads them back — so you can move them to
+  another computer.
+- **Options considered:** Leave movies in browser storage only (fine until you switch
+  computers or clear data); a server/database (rejected — adds accounts and
+  child-privacy risk for no V1 gain).
+- **Why:** Real use surfaced the pain: closing the cards forced a regenerate, scripts
+  weren't kept, and everything lived in one browser. Backup/restore keeps the
+  no-accounts, no-child-data rule while making the work durable.
+- **What would change my mind:** If people want their movies on any device
+  automatically, revisit safe cloud storage (still zero child data).
+- **Outcome:** _live_.
+
+**#11 — Treat a movie as "parts" (Script · Cards · Storyboard) + add a Storyboard** · 2026-07-13
+- **Decision:** Each saved movie shows what's inside as pills — a ✓ for a part that's
+  made, a dashed ＋ for one that isn't. Tap the movie to open it, or tap one part to
+  jump straight to it (and a "not yet" part gets made from what already exists). Added
+  a Storyboard view — the cards as a quick title-and-description overview; tap a scene
+  to see its full step card.
+- **Options considered:** One "N steps" label (what it did); a full split-screen that
+  showed everything at once (built, then parked — too big a rewrite right before real
+  use); AI-drawn storyboard sketches (parked — needs a separate image tool and cost).
+- **Why:** Staff couldn't tell a script-only movie from a cards movie, and there was no
+  fast way to jump to one part. The pills make a movie's contents readable at a glance
+  and clickable. The storyboard is just the cards seen as frames, so it's basically
+  free.
+- **What would change my mind:** If the parts model confuses more than it helps, fall
+  back to opening the whole movie only.
+- **Outcome:** _live_ — AI-drawn sketches remain a future add.
+
+**#12 — One consistent navigation on every screen** · 2026-07-13
+- **Decision:** Every full-screen view (step cards, script, storyboard, check screen)
+  uses the same navigation: 🏠 Home on the left (always → Your movies) and ✕ Close on
+  the right (steps back one screen — a card opened from the storyboard closes back to
+  the storyboard). The scattered, differently-placed Home/Back buttons are gone.
+- **Options considered:** Leave each screen's buttons where they grew up
+  (inconsistent); make Close also go Home (simpler, but two buttons doing one job).
+- **Why:** Testing showed the back-navigation was different on every screen and easy to
+  get lost in. Consistent placement plus a predictable "Home vs back one step" is basic
+  good UI, and it makes the app feel finished.
+- **What would change my mind:** If "back one step" ever surprises people, simplify
+  Close to always return Home.
+- **Outcome:** _live_.
+
+**#13 — Design changes as mockups first, ship them safely** · 2026-07-13
+- **Decision:** For UI changes I mock up options first — rendered in the app's real
+  colours — to choose a direction before writing app code, then build on a branch that
+  deploys a private preview, test it, and only merge to the live app when it's right.
+  I also made an interactive site map of the whole app's navigation.
+- **Options considered:** Build straight onto the live app and fix in place (fast, but
+  risks breaking a tool that's being tested with real kids).
+- **Why:** The app is live and application-critical, so the live version must never
+  break. Mockups make the design choice cheap to change; branch previews make the build
+  safe. It's also good evidence of process for the application.
+- **What would change my mind:** For tiny, obviously-safe tweaks, skip the mockup step.
+- **Outcome:** _in use_ — the age setup, saved-work, parts/storyboard, and navigation
+  changes all shipped this way.
