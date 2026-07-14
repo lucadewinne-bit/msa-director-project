@@ -1136,10 +1136,13 @@ function showHomePage() {
     title.textContent = movie.name;
     const steps = document.createElement("div");
     steps.className = "steps";
-    const bits = [];
-    if (movie.script) bits.push("📄 Script");
-    if (movie.cards.length) bits.push("🗂️ " + movie.cards.length + (movie.cards.length === 1 ? " card" : " cards"));
-    steps.textContent = bits.length ? bits.join("  ·  ") : "empty";
+    if (movie.cards.length) {
+      steps.textContent = "🗂️ " + movie.cards.length + (movie.cards.length === 1 ? " card" : " cards");
+    } else if (movie.script) {
+      steps.textContent = "📄 Script";
+    } else {
+      steps.textContent = "empty";
+    }
     titleBox.append(title, steps);
 
     const trash = document.createElement("button");
