@@ -642,6 +642,16 @@
   .sbDesc { margin-top: 5px; font-size: 0.92em; color: var(--ink); line-height: 1.45; }
   .sbHint { margin-top: 9px; font-size: 0.76em; color: var(--clay); }
   #sbBackButton:hover { background: var(--paper); }
+  /* ---- Consistent top navigation (Home left · title · Close right) ---- */
+  .navbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 10px 16px; background: var(--ivory); border-bottom: 1px solid var(--line); }
+  .navbar .nLeft { justify-self: start; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .navbar .nTitle { justify-self: center; font-family: Georgia, serif; font-weight: 600; font-size: 1.08rem; color: var(--ink); }
+  .navbar .nRight { justify-self: end; }
+  .navBtn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 0.85rem; font-family: inherit; cursor: pointer; white-space: nowrap; }
+  .navBtn:hover { border-color: var(--clay); }
+  .navBtn.navHome { font-weight: 600; }
+  .navBtn.ghost { border-color: transparent; background: transparent; color: var(--slate); }
+  .navBtn.ghost:hover { background: var(--paper); color: var(--ink); border-color: var(--line); }
 </style>
 </head>
 <body>
@@ -727,7 +737,11 @@
 
 <!-- Curation screen: staff check, fix, and skip cards before kid mode -->
 <div id="curateMode">
-  <header>🎬 Check the cards, director! <button id="curateHomeButton" title="Home" style="float:right;background:transparent;font-size:1em;">🏠</button></header>
+  <div class="navbar">
+    <div class="nLeft"><button class="navBtn navHome">🏠 Home</button></div>
+    <div class="nTitle">🗂️ Check the cards</div>
+    <div class="nRight"><button class="navBtn navClose">✕ Close</button></div>
+  </div>
   <div class="journeyBar">
     <span class="jstep" data-step="brainstorm"><span class="jnum">1</span> 💡 Brainstorm</span>
     <span class="jarrow">→</span>
@@ -751,7 +765,11 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
 
 <!-- Script view: the full movie script (read-aloud) -->
 <div id="scriptMode">
-  <header>📄 The Script <button id="scriptHomeButton" title="Home" style="float:right;background:transparent;font-size:0.7em;">🏠</button></header>
+  <div class="navbar">
+    <div class="nLeft"><button class="navBtn navHome">🏠 Home</button></div>
+    <div class="nTitle">📄 The Script</div>
+    <div class="nRight"><button class="navBtn navClose">✕ Close</button></div>
+  </div>
   <div id="scriptScroll">
     <div id="scriptText"></div>
   </div>
@@ -759,7 +777,6 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
     <button id="scriptHearButton" style="background:transparent;border:1px solid var(--kraft);color:var(--ink);">Hear it 🔊</button>
     <button id="scriptSaveButton" style="background:var(--kraft);color:var(--ink);">Save 💾</button>
     <button id="scriptCardsButton">Make step cards 🗂️ ▶</button>
-    <button id="scriptBackButton" style="background:transparent;border:1px solid var(--slate);color:var(--slate);">Back to chat</button>
   </div>
 </div>
 
@@ -833,7 +850,11 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
 
 <!-- Storyboard view: the step cards laid out as film frames -->
 <div id="storyboardView">
-  <header>🎬 Storyboard <button id="sbBackButton" title="Close" style="float:right;background:transparent;color:var(--ink);font-size:0.62em;">✕ Close</button></header>
+  <div class="navbar">
+    <div class="nLeft"><button class="navBtn navHome">🏠 Home</button></div>
+    <div class="nTitle">🎬 Storyboard</div>
+    <div class="nRight"><button class="navBtn navClose">✕ Close</button></div>
+  </div>
   <div id="sbScroll"></div>
 </div>
 
@@ -1026,11 +1047,10 @@ document.getElementById("backButton").addEventListener("click", () => {
 document.getElementById("hearButton").addEventListener("click", () => {
   readAloud(activeCards()[cardIndex].say);
 });
-document.getElementById("exitButton").addEventListener("click", () => {
-  speechSynthesis.cancel();
-  cardMode.classList.remove("open");
-});
+document.getElementById("exitButton").addEventListener("click", () => { navClose(); });
 document.getElementById("editCardsButton").addEventListener("click", () => {
+  const idx = cardIndex;
+  navStack.push(() => openCardMode(idx));
   speechSynthesis.cancel();
   openCurateMode();
 });
@@ -1116,13 +1136,9 @@ document.getElementById("showKidsButton").addEventListener("click", () => {
       "⚠️ All the cards are in the Stash! Bring at least one back first.";
     return;
   }
+  navStack.push(openCurateMode);
   curateMode.classList.remove("open");
   openCardMode();
-});
-
-document.getElementById("curateHomeButton").addEventListener("click", () => {
-  curateMode.classList.remove("open");
-  showHomePage();
 });
 
 // ---- Home page + saving movies ----
@@ -1165,6 +1181,7 @@ function loadMovieState(movie) {
 function openPart(movie, part) {
   loadMovieState(movie);
   homePage.classList.remove("open");
+  navStack.push(showHomePage);
   const hasScript = !!movie.script;
   const hasCards = (movie.cards || []).length > 0;
   if (part === "script") {
@@ -1203,10 +1220,7 @@ function openStoryboard() {
   homePage.classList.remove("open");
   storyboardView.classList.add("open");
 }
-document.getElementById("sbBackButton").addEventListener("click", () => {
-  storyboardView.classList.remove("open");
-  showHomePage();
-});
+// Storyboard Close/Home handled by the shared navbar buttons
 
 function showHomePage() {
   const grid = document.getElementById("movieGrid");
@@ -1318,12 +1332,8 @@ document.getElementById("saveOk").addEventListener("click", () => {
   setTimeout(() => { saveButton.textContent = "Save 💾"; }, 2000);
 });
 
-// Home button on the card screen: back to the home page
-document.getElementById("cardHomeButton").addEventListener("click", () => {
-  speechSynthesis.cancel();
-  cardMode.classList.remove("open");
-  showHomePage();
-});
+// Home button on the card screen → shared navHome
+document.getElementById("cardHomeButton").addEventListener("click", () => { navHome(); });
 
 // ---- Journey indicator: light up the step we're on (feedback #2) ----
 function setJourneyPhase(phase) {
@@ -1401,6 +1411,7 @@ function resetConversation() {
   cardsButton.classList.add("waiting");
   messagesBox.innerHTML = "";
   showBubble("What's your movie idea? 🎬 Type it and let's make a story!", "claude");
+  navStack = [];
 }
 
 function startMovie() {
@@ -1512,17 +1523,9 @@ async function writeScript() {
   button.disabled = false;
 }
 
-document.getElementById("scriptBackButton").addEventListener("click", () => {
-  speechSynthesis.cancel();
-  scriptMode.classList.remove("open");
-});
 document.getElementById("scriptHearButton").addEventListener("click", () => readAloud(scriptText));
-document.getElementById("scriptHomeButton").addEventListener("click", () => {
-  speechSynthesis.cancel();
-  scriptMode.classList.remove("open");
-  showHomePage();
-});
 document.getElementById("scriptCardsButton").addEventListener("click", () => {
+  navStack.push(openScriptMode);
   scriptMode.classList.remove("open");
   cardsButton.click();
 });
@@ -1533,7 +1536,12 @@ function openScriptMode() {
   document.getElementById("scriptCardsButton").style.display = (history.length > 0) ? "inline-block" : "none";
   scriptMode.classList.add("open");
 }
-document.getElementById("scriptViewButton").addEventListener("click", openScriptMode);
+document.getElementById("scriptViewButton").addEventListener("click", () => {
+  const idx = cardIndex;
+  navStack.push(() => openCardMode(idx));
+  cardMode.classList.remove("open");
+  openScriptMode();
+});
 
 document.getElementById("scriptSaveButton").addEventListener("click", () => {
   const name = (prompt("Name this movie to save it:") || "").trim();
@@ -1585,6 +1593,19 @@ document.getElementById("importFile").addEventListener("change", (event) => {
   if (file) importMovies(file);
   event.target.value = "";   // let the same file be re-imported later
 });
+// ---- Consistent navigation: 🏠 Home → Your movies · ✕ Close → back one screen ----
+let navStack = [];
+function closeAllViews() {
+  cardMode.classList.remove("open");
+  storyboardView.classList.remove("open");
+  scriptMode.classList.remove("open");
+  curateMode.classList.remove("open");
+  speechSynthesis.cancel();
+}
+function navHome() { navStack = []; closeAllViews(); showHomePage(); }
+function navClose() { closeAllViews(); const back = navStack.pop(); if (back) back(); }
+document.querySelectorAll(".navHome").forEach(b => b.addEventListener("click", navHome));
+document.querySelectorAll(".navClose").forEach(b => b.addEventListener("click", navClose));
 </script>
 
 </body>
