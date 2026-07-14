@@ -635,12 +635,12 @@
   /* ---- Storyboard view: the cards as film frames ---- */
   #storyboardView { position: fixed; inset: 0; background: var(--paper); display: none; flex-direction: column; z-index: 22; }
   #storyboardView.open { display: flex; }
-  #sbScroll { flex: 1; overflow-y: auto; padding: 22px 28px 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; align-content: start; }
-  .sbFrame { background: var(--ivory); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-  .sbShot { height: 128px; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 3.4em; border-bottom: 1px solid var(--line); }
-  .sbNum { padding: 10px 13px 3px; font-weight: 600; font-size: 0.98em; }
-  .sbSay { padding: 0 13px 6px; font-size: 0.9em; }
-  .sbCam { padding: 0 13px 13px; font-size: 0.82em; color: var(--slate); }
+  #sbScroll { flex: 1; overflow-y: auto; padding: 22px 28px 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; align-content: start; }
+  .sbFrame { background: var(--ivory); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+  .sbFrame:hover { border-color: var(--clay); box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+  .sbHead { font-weight: 600; font-size: 1rem; color: var(--ink); }
+  .sbDesc { margin-top: 5px; font-size: 0.92em; color: var(--ink); line-height: 1.45; }
+  .sbHint { margin-top: 9px; font-size: 0.76em; color: var(--clay); }
   #sbBackButton:hover { background: var(--paper); }
 </style>
 </head>
@@ -1006,8 +1006,8 @@ function showCurrentCard() {
   document.getElementById("nextButton").disabled = (cardIndex === playCards.length - 1);
 }
 
-function openCardMode() {
-  cardIndex = 0;
+function openCardMode(startIndex) {
+  cardIndex = startIndex || 0;
   setJourneyPhase("cards");
   cardMode.classList.add("open");
   cardsButton.classList.remove("ready");   // job done — stop glowing
@@ -1190,11 +1190,11 @@ function renderStoryboard() {
   }
   list.forEach((card, i) => {
     const frame = document.createElement("div"); frame.className = "sbFrame";
-    const shot = document.createElement("div"); shot.className = "sbShot"; shot.textContent = card.emoji;
-    const num = document.createElement("div"); num.className = "sbNum"; num.textContent = (i + 1) + ". " + card.title;
-    const say = document.createElement("div"); say.className = "sbSay"; say.textContent = card.say;
-    const cam = document.createElement("div"); cam.className = "sbCam"; cam.textContent = "🎥 " + (card.camera || "");
-    frame.append(shot, num, say, cam);
+    const head = document.createElement("div"); head.className = "sbHead"; head.textContent = card.emoji + "  " + (i + 1) + ". " + card.title;
+    const desc = document.createElement("div"); desc.className = "sbDesc"; desc.textContent = card.say;
+    const hint = document.createElement("div"); hint.className = "sbHint"; hint.textContent = "Tap to see the step card →";
+    frame.append(head, desc, hint);
+    frame.addEventListener("click", () => { storyboardView.classList.remove("open"); openCardMode(i); });
     box.appendChild(frame);
   });
 }
