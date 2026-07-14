@@ -1124,7 +1124,7 @@ function showHomePage() {
     // Preview: the first step's emoji, big — like a mini movie poster
     const preview = document.createElement("div");
     preview.className = "preview";
-    preview.textContent = movie.cards[0] ? movie.cards[0].emoji : "🎬";
+    preview.textContent = movie.cards[0] ? movie.cards[0].emoji : (movie.script ? "📄" : "🎬");
 
     const meta = document.createElement("div");
     meta.className = "meta";
@@ -1136,7 +1136,10 @@ function showHomePage() {
     title.textContent = movie.name;
     const steps = document.createElement("div");
     steps.className = "steps";
-    steps.textContent = movie.cards.length + (movie.cards.length === 1 ? " step" : " steps");
+    const bits = [];
+    if (movie.script) bits.push("📄 Script");
+    if (movie.cards.length) bits.push("🗂️ " + movie.cards.length + (movie.cards.length === 1 ? " card" : " cards"));
+    steps.textContent = bits.length ? bits.join("  ·  ") : "empty";
     titleBox.append(title, steps);
 
     const trash = document.createElement("button");
