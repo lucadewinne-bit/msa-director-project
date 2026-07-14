@@ -733,7 +733,8 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
     <div id="scriptText"></div>
   </div>
   <div id="scriptFooter">
-    <button id="scriptHearButton" style="background:transparent;border:1px solid var(--kraft);">Hear it 🔊</button>
+    <button id="scriptHearButton" style="background:transparent;border:1px solid var(--kraft);color:var(--ink);">Hear it 🔊</button>
+    <button id="scriptSaveButton" style="background:var(--kraft);color:var(--ink);">Save 💾</button>
     <button id="scriptCardsButton">Make step cards 🗂️ ▶</button>
     <button id="scriptBackButton" style="background:transparent;border:1px solid var(--slate);color:var(--slate);">Back to chat</button>
   </div>
@@ -926,13 +927,19 @@ function activeCards() {
 }
 
 function readAloud(text) {
-  // Aaron reads the cards out loud (the studio's official narrator)
+  // Read out loud. Split into short chunks so long text (like a full script)
+  // isn't cut off by the browser's speech engine.
   speechSynthesis.cancel();
-  const speech = new SpeechSynthesisUtterance(text);
-  speech.rate = 0.95;
   const aaron = speechSynthesis.getVoices().find(v => v.name === "Aaron");
-  if (aaron) speech.voice = aaron;
-  speechSynthesis.speak(speech);
+  const chunks = (text.match(/[^.!?\n]+[.!?\n]*/g) || [text]);
+  for (const chunk of chunks) {
+    const piece = chunk.trim();
+    if (!piece) continue;
+    const speech = new SpeechSynthesisUtterance(piece);
+    speech.rate = 0.95;
+    if (aaron) speech.voice = aaron;
+    speechSynthesis.speak(speech);
+  }
 }
 
 function showCurrentCard() {
@@ -1153,10 +1160,11 @@ function showHomePage() {
     card.append(preview, meta);
     card.addEventListener("click", () => {
       homePage.classList.remove("open");
-      cards = movie.cards;
+      cards = movie.cards || [];
       scriptText = movie.script || "";
       storyReady = true;
-      openCardMode();
+      if (cards.length > 0) openCardMode();
+      else openScriptMode();
     });
     grid.appendChild(card);
   }
@@ -1416,9 +1424,22 @@ document.getElementById("scriptCardsButton").addEventListener("click", () => {
 
 function openScriptMode() {
   document.getElementById("scriptText").textContent = scriptText;
+  // "Make step cards" only works from a live brainstorm, not a reopened movie
+  document.getElementById("scriptCardsButton").style.display = (history.length > 0) ? "inline-block" : "none";
   scriptMode.classList.add("open");
 }
 document.getElementById("scriptViewButton").addEventListener("click", openScriptMode);
+
+document.getElementById("scriptSaveButton").addEventListener("click", () => {
+  const name = (prompt("Name this movie to save it:") || "").trim();
+  if (!name) return;
+  const movies = loadMovies().filter(m => m.name !== name);
+  movies.push({ name: name, cards: cards, script: scriptText });
+  localStorage.setItem("msaMovies", JSON.stringify(movies));
+  const saved = document.getElementById("scriptSaveButton");
+  saved.textContent = "Saved ✔";
+  setTimeout(() => { saved.textContent = "Save 💾"; }, 2000);
+});
 
 // ---- Back up / restore all movies (a file copy, portable across computers) ----
 function exportMovies() {
