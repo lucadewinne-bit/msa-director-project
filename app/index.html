@@ -619,6 +619,29 @@
     font-size: 0.9em; padding: 8px 14px;
   }
   .backupTools button:hover { background: var(--paper); color: var(--ink); }
+
+  /* ---- Movie card: parts as pills (done = check, not-done = dashed +) ---- */
+  .movieCard { width: 216px; }
+  .movieCard .mBody { padding: 10px 12px 13px; }
+  .movieCard .mTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+  .movieCard .mTop .movieTitle { flex: 1; min-width: 0; }
+  .movieCard .mParts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .mPill { display: inline-flex; align-items: center; gap: 4px; font-family: inherit; font-size: 0.72rem; line-height: 1.2; border-radius: 999px; padding: 3px 9px; cursor: pointer; border: 1px solid var(--line); background: var(--paper); color: var(--ink); white-space: nowrap; }
+  .mPill:hover { border-color: var(--clay); box-shadow: 0 0 0 2px rgba(204,120,92,0.18); }
+  .mPill.todo { background: transparent; border-style: dashed; color: var(--slate); }
+  .mPill .mk { font-weight: 700; }
+  .mPill.done .mk { color: #4F8A5B; }
+
+  /* ---- Storyboard view: the cards as film frames ---- */
+  #storyboardView { position: fixed; inset: 0; background: var(--paper); display: none; flex-direction: column; z-index: 22; }
+  #storyboardView.open { display: flex; }
+  #sbScroll { flex: 1; overflow-y: auto; padding: 22px 28px 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; align-content: start; }
+  .sbFrame { background: var(--ivory); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .sbShot { height: 128px; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 3.4em; border-bottom: 1px solid var(--line); }
+  .sbNum { padding: 10px 13px 3px; font-weight: 600; font-size: 0.98em; }
+  .sbSay { padding: 0 13px 6px; font-size: 0.9em; }
+  .sbCam { padding: 0 13px 13px; font-size: 0.82em; color: var(--slate); }
+  #sbBackButton:hover { background: var(--paper); }
 </style>
 </head>
 <body>
@@ -806,6 +829,12 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
       <button id="setupSkip" type="button">Skip</button>
     </div>
   </div>
+</div>
+
+<!-- Storyboard view: the step cards laid out as film frames -->
+<div id="storyboardView">
+  <header>🎬 Storyboard <button id="sbBackButton" title="Close" style="float:right;background:transparent;color:var(--ink);font-size:0.62em;">✕ Close</button></header>
+  <div id="sbScroll"></div>
 </div>
 
 <form id="chatForm">
@@ -1105,6 +1134,80 @@ function loadMovies() {
   return JSON.parse(localStorage.getItem("msaMovies") || "[]");
 }
 
+// A little pill for one part of a movie (Script / Cards / Storyboard).
+function makePartPill(done, text, action) {
+  const pill = document.createElement("button");
+  pill.className = "mPill" + (done ? " done" : " todo");
+  const mk = document.createElement("span");
+  mk.className = "mk";
+  mk.textContent = done ? "✓" : "＋";
+  pill.append(mk, document.createTextNode(" " + text));
+  pill.addEventListener("click", (event) => { event.stopPropagation(); action(); });
+  return pill;
+}
+
+// Load a saved movie into the app, rebuilding a little context so a
+// missing part can still be made from the parts that exist.
+function loadMovieState(movie) {
+  cards = (movie.cards || []).map(c => ({ ...c }));
+  scriptText = movie.script || "";
+  storyReady = true;
+  history.length = 0;
+  if (movie.script) {
+    history.push({ role: "user", content: "Here is the movie's script:\n\n" + movie.script });
+  } else if (cards.length) {
+    history.push({ role: "user", content: "Here is the movie's story, as step cards:\n\n" +
+      cards.map((c, i) => (i + 1) + ". " + c.title + " — " + c.say).join("\n") });
+  }
+}
+
+// Open a movie, or jump straight to one of its parts (making it if needed).
+function openPart(movie, part) {
+  loadMovieState(movie);
+  homePage.classList.remove("open");
+  const hasScript = !!movie.script;
+  const hasCards = (movie.cards || []).length > 0;
+  if (part === "script") {
+    if (hasScript) openScriptMode(); else writeScript();          // make script from the cards
+  } else if (part === "cards") {
+    if (hasCards) openCardMode(); else generateCards();           // make cards from the script
+  } else if (part === "storyboard") {
+    if (hasCards) openStoryboard(); else generateCards();         // storyboard needs cards first
+  } else {
+    if (hasCards) openCardMode(); else if (hasScript) openScriptMode(); else openCardMode();
+  }
+}
+
+// ---- Storyboard view: the cards laid out as film frames ----
+const storyboardView = document.getElementById("storyboardView");
+function renderStoryboard() {
+  const box = document.getElementById("sbScroll");
+  box.innerHTML = "";
+  const list = activeCards();
+  if (list.length === 0) {
+    box.innerHTML = "<div style='color:var(--slate)'>No cards yet — make the step cards first.</div>";
+    return;
+  }
+  list.forEach((card, i) => {
+    const frame = document.createElement("div"); frame.className = "sbFrame";
+    const shot = document.createElement("div"); shot.className = "sbShot"; shot.textContent = card.emoji;
+    const num = document.createElement("div"); num.className = "sbNum"; num.textContent = (i + 1) + ". " + card.title;
+    const say = document.createElement("div"); say.className = "sbSay"; say.textContent = card.say;
+    const cam = document.createElement("div"); cam.className = "sbCam"; cam.textContent = "🎥 " + (card.camera || "");
+    frame.append(shot, num, say, cam);
+    box.appendChild(frame);
+  });
+}
+function openStoryboard() {
+  renderStoryboard();
+  homePage.classList.remove("open");
+  storyboardView.classList.add("open");
+}
+document.getElementById("sbBackButton").addEventListener("click", () => {
+  storyboardView.classList.remove("open");
+  showHomePage();
+});
+
 function showHomePage() {
   const grid = document.getElementById("movieGrid");
   grid.innerHTML = "";
@@ -1124,20 +1227,16 @@ function showHomePage() {
     // Preview: the first step's emoji, big — like a mini movie poster
     const preview = document.createElement("div");
     preview.className = "preview";
-    preview.textContent = movie.cards[0] ? movie.cards[0].emoji : "🎬";
+    preview.textContent = movie.cards[0] ? movie.cards[0].emoji : (movie.script ? "📄" : "🎬");
 
-    const meta = document.createElement("div");
-    meta.className = "meta";
+    const body = document.createElement("div");
+    body.className = "mBody";
 
-    const titleBox = document.createElement("div");
-    titleBox.className = "titleBox";
+    const topRow = document.createElement("div");
+    topRow.className = "mTop";
     const title = document.createElement("div");
     title.className = "movieTitle";
     title.textContent = movie.name;
-    const steps = document.createElement("div");
-    steps.className = "steps";
-    steps.textContent = movie.cards.length + (movie.cards.length === 1 ? " step" : " steps");
-    titleBox.append(title, steps);
 
     const trash = document.createElement("button");
     trash.className = "deleteMovie";
@@ -1155,17 +1254,23 @@ function showHomePage() {
         JSON.stringify(loadMovies().filter(m => m.name !== movie.name)));
       showHomePage();
     });
+    topRow.append(title, trash);
 
-    meta.append(titleBox, trash);
-    card.append(preview, meta);
-    card.addEventListener("click", () => {
-      homePage.classList.remove("open");
-      cards = movie.cards || [];
-      scriptText = movie.script || "";
-      storyReady = true;
-      if (cards.length > 0) openCardMode();
-      else openScriptMode();
-    });
+    // Parts: tap one to jump to it (done = check, not-done = dashed + to make it)
+    const parts = document.createElement("div");
+    parts.className = "mParts";
+    const nCards = movie.cards.length;
+    const cardsLabel = nCards ? ("🗂️ " + nCards + (nCards === 1 ? " card" : " cards")) : "🗂️ Cards";
+    parts.append(
+      makePartPill(!!movie.script, "📄 Script", () => openPart(movie, "script")),
+      makePartPill(nCards > 0, cardsLabel, () => openPart(movie, "cards")),
+      makePartPill(nCards > 0, "🎬 Storyboard", () => openPart(movie, "storyboard"))
+    );
+
+    body.append(topRow, parts);
+    card.append(preview, body);
+    // Tapping the movie (poster or name) opens it; pills handle their own clicks.
+    card.addEventListener("click", () => openPart(movie, "movie"));
     grid.appendChild(card);
   }
   homePage.classList.add("open");
