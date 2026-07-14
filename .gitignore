@@ -4,3 +4,6 @@ api_key.txt
 # Computer-generated junk files
 __pycache__/
 .DS_Store
+
+# Personal files that stay on this computer only
+private_notes/
