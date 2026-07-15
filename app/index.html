@@ -1530,8 +1530,11 @@ async function writeScript() {
 // Grow the script box to fit the whole script (no inner scroll — the page scrolls instead)
 function autoGrowScript() {
   const el = document.getElementById("scriptText");
+  const scroller = el.closest("#scriptScroll");
+  const top = scroller ? scroller.scrollTop : 0;   // remember where we're looking
   el.style.height = "auto";
   el.style.height = el.scrollHeight + "px";
+  if (scroller) scroller.scrollTop = top;           // ...and stay there (no jump)
 }
 document.getElementById("scriptText").addEventListener("input", (event) => {
   scriptText = event.target.value;
