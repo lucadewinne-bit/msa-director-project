@@ -595,10 +595,13 @@
   #scriptMode.open { display: flex; }
   #scriptScroll { flex: 1; overflow-y: auto; padding: 24px 28px 110px; }
   #scriptText {
+    display: block; width: 100%; max-width: 760px; margin: 0 auto;
     background: var(--ivory); border: 1px solid var(--line); border-left: 4px solid var(--kraft);
-    border-radius: 12px; padding: 22px 26px; max-width: 760px; margin: 0 auto;
-    font-size: 1.15em; line-height: 1.7; white-space: pre-wrap; color: var(--ink);
+    border-radius: 12px; padding: 20px 24px;
+    font-family: inherit; font-size: 1.12em; line-height: 1.7; color: var(--ink);
+    min-height: 220px; resize: none; overflow: hidden;
   }
+  #scriptText:focus { outline: 2px solid var(--clay); border-left-color: var(--clay); }
   #scriptFooter {
     position: absolute; bottom: 0; left: 0; right: 0; background: var(--ivory);
     border-top: 1px solid var(--line); padding: 14px 28px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
@@ -771,7 +774,7 @@ Skip cards you don't want — they wait in the Stash below, nothing is thrown aw
     <div class="nRight"><button class="navBtn navClose">✕ Close</button></div>
   </div>
   <div id="scriptScroll">
-    <div id="scriptText"></div>
+    <textarea id="scriptText" spellcheck="false" placeholder="Your script will show here once you write it — and you can edit it right here."></textarea>
   </div>
   <div id="scriptFooter">
     <button id="scriptHearButton" style="background:transparent;border:1px solid var(--kraft);color:var(--ink);">Hear it 🔊</button>
@@ -1523,7 +1526,40 @@ async function writeScript() {
   button.disabled = false;
 }
 
-document.getElementById("scriptHearButton").addEventListener("click", () => readAloud(scriptText));
+// Edit the script right in place — keep the saved/heard text in sync
+// Grow the script box to fit the whole script (no inner scroll — the page scrolls instead)
+function autoGrowScript() {
+  const el = document.getElementById("scriptText");
+  const scroller = el.closest("#scriptScroll");
+  const top = scroller ? scroller.scrollTop : 0;   // remember where we're looking
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+  if (scroller) scroller.scrollTop = top;           // ...and stay there (no jump)
+}
+document.getElementById("scriptText").addEventListener("input", (event) => {
+  scriptText = event.target.value;
+  autoGrowScript();
+});
+
+// Hear it → click to play, click again to pause, click again to resume
+const scriptHearButton = document.getElementById("scriptHearButton");
+scriptHearButton.addEventListener("click", () => {
+  if (speechSynthesis.speaking && !speechSynthesis.paused) {
+    speechSynthesis.pause();
+    scriptHearButton.textContent = "▶ Resume";
+    return;
+  }
+  if (speechSynthesis.paused) {
+    speechSynthesis.resume();
+    scriptHearButton.textContent = "⏸ Pause";
+    return;
+  }
+  readAloud(scriptText);
+  scriptHearButton.textContent = "⏸ Pause";
+  const check = setInterval(() => {
+    if (!speechSynthesis.speaking) { clearInterval(check); scriptHearButton.textContent = "Hear it 🔊"; }
+  }, 400);
+});
 document.getElementById("scriptCardsButton").addEventListener("click", () => {
   navStack.push(openScriptMode);
   scriptMode.classList.remove("open");
@@ -1531,10 +1567,13 @@ document.getElementById("scriptCardsButton").addEventListener("click", () => {
 });
 
 function openScriptMode() {
-  document.getElementById("scriptText").textContent = scriptText;
+  document.getElementById("scriptText").value = scriptText;
   // "Make step cards" only works from a live brainstorm, not a reopened movie
   document.getElementById("scriptCardsButton").style.display = (history.length > 0) ? "inline-block" : "none";
+  speechSynthesis.cancel();
+  document.getElementById("scriptHearButton").textContent = "Hear it 🔊";
   scriptMode.classList.add("open");
+  autoGrowScript();
 }
 document.getElementById("scriptViewButton").addEventListener("click", () => {
   const idx = cardIndex;
