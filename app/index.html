@@ -979,10 +979,17 @@ function activeCards() {
   return cards.filter(card => !card.stashed);
 }
 
+function stopSpeaking() {
+  // Robustly stop speech — resume() first so a *paused* utterance can be cancelled
+  // (browsers refuse to cancel paused speech, and paused speech can auto-resume).
+  try { speechSynthesis.resume(); } catch (e) {}
+  speechSynthesis.cancel();
+}
+
 function readAloud(text) {
   // Read out loud. Split into short chunks so long text (like a full script)
   // isn't cut off by the browser's speech engine.
-  speechSynthesis.cancel();
+  stopSpeaking();
   const aaron = speechSynthesis.getVoices().find(v => v.name === "Aaron");
   const chunks = (text.match(/[^.!?\n]+[.!?\n]*/g) || [text]);
   for (const chunk of chunks) {
@@ -1031,6 +1038,8 @@ function showCurrentCard() {
 }
 
 function openCardMode(startIndex) {
+  stopSpeaking();
+  document.getElementById("hearButton").textContent = "Hear it 🔊";
   cardIndex = startIndex || 0;
   setJourneyPhase("cards");
   cardMode.classList.add("open");
@@ -1039,22 +1048,35 @@ function openCardMode(startIndex) {
   showCurrentCard();
 }
 
+function resetCardHear() { document.getElementById("hearButton").textContent = "Hear it 🔊"; }
 document.getElementById("nextButton").addEventListener("click", () => {
+  stopSpeaking(); resetCardHear();
   cardIndex = cardIndex + 1;
   showCurrentCard();
 });
 document.getElementById("backButton").addEventListener("click", () => {
+  stopSpeaking(); resetCardHear();
   cardIndex = cardIndex - 1;
   showCurrentCard();
 });
-document.getElementById("hearButton").addEventListener("click", () => {
+const cardHearButton = document.getElementById("hearButton");
+cardHearButton.addEventListener("click", () => {
+  if (speechSynthesis.speaking) {          // already reading → stop it
+    stopSpeaking();
+    cardHearButton.textContent = "Hear it 🔊";
+    return;
+  }
   readAloud(activeCards()[cardIndex].say);
+  cardHearButton.textContent = "⏹ Stop";
+  const check = setInterval(() => {
+    if (!speechSynthesis.speaking) { clearInterval(check); cardHearButton.textContent = "Hear it 🔊"; }
+  }, 400);
 });
 document.getElementById("exitButton").addEventListener("click", () => { navClose(); });
 document.getElementById("editCardsButton").addEventListener("click", () => {
   const idx = cardIndex;
   navStack.push(() => openCardMode(idx));
-  speechSynthesis.cancel();
+  stopSpeaking();
   openCurateMode();
 });
 
@@ -1368,7 +1390,7 @@ renderWelcome();
 // ---- Help panel: simple Q&A, with read-aloud for the kid answers (feedback #3) ----
 const helpMode = document.getElementById("helpMode");
 function openHelp() { helpMode.classList.add("open"); }
-function closeHelp() { speechSynthesis.cancel(); helpMode.classList.remove("open"); }
+function closeHelp() { stopSpeaking(); helpMode.classList.remove("open"); }
 document.querySelectorAll(".js-open-help").forEach(b => b.addEventListener("click", openHelp));
 document.getElementById("helpClose").addEventListener("click", closeHelp);
 helpMode.addEventListener("click", (event) => { if (event.target === helpMode) closeHelp(); });
@@ -1544,18 +1566,13 @@ document.getElementById("scriptText").addEventListener("input", (event) => {
 // Hear it → click to play, click again to pause, click again to resume
 const scriptHearButton = document.getElementById("scriptHearButton");
 scriptHearButton.addEventListener("click", () => {
-  if (speechSynthesis.speaking && !speechSynthesis.paused) {
-    speechSynthesis.pause();
-    scriptHearButton.textContent = "▶ Resume";
+  if (speechSynthesis.speaking) {          // already reading → stop it
+    stopSpeaking();
+    scriptHearButton.textContent = "Hear it 🔊";
     return;
   }
-  if (speechSynthesis.paused) {
-    speechSynthesis.resume();
-    scriptHearButton.textContent = "⏸ Pause";
-    return;
-  }
-  readAloud(scriptText);
-  scriptHearButton.textContent = "⏸ Pause";
+  readAloud(scriptText);                   // start reading
+  scriptHearButton.textContent = "⏹ Stop";
   const check = setInterval(() => {
     if (!speechSynthesis.speaking) { clearInterval(check); scriptHearButton.textContent = "Hear it 🔊"; }
   }, 400);
@@ -1570,7 +1587,7 @@ function openScriptMode() {
   document.getElementById("scriptText").value = scriptText;
   // "Make step cards" only works from a live brainstorm, not a reopened movie
   document.getElementById("scriptCardsButton").style.display = (history.length > 0) ? "inline-block" : "none";
-  speechSynthesis.cancel();
+  stopSpeaking();
   document.getElementById("scriptHearButton").textContent = "Hear it 🔊";
   scriptMode.classList.add("open");
   autoGrowScript();
@@ -1639,7 +1656,7 @@ function closeAllViews() {
   storyboardView.classList.remove("open");
   scriptMode.classList.remove("open");
   curateMode.classList.remove("open");
-  speechSynthesis.cancel();
+  stopSpeaking();
 }
 function navHome() { navStack = []; closeAllViews(); showHomePage(); }
 function navClose() { closeAllViews(); const back = navStack.pop(); if (back) back(); }
