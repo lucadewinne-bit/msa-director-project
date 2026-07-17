@@ -73,6 +73,7 @@ repo. See [DECISIONS.md](DECISIONS.md) #6.
 | File | What it is |
 |------|------------|
 | [SPEC.md](SPEC.md) | **The current spec (V1). Work from this.** |
+| [RUNBOOK.md](RUNBOOK.md) | 1-page guide so staff can run the tool without me |
 | [MASTER_PLAN.md](MASTER_PLAN.md) | The living plan with the status board |
 | [DECISIONS.md](DECISIONS.md) | Every real decision, logged with reasoning |
 | [REQUIREMENTS.md](REQUIREMENTS.md) | What the application requires |
@@ -80,6 +81,9 @@ repo. See [DECISIONS.md](DECISIONS.md) #6.
 | [PROMPT_ONBOARDING.md](PROMPT_ONBOARDING.md) | The engineer prompt that drove the onboarding round |
 | [PHASE1_PROMPT.md](PHASE1_PROMPT.md) / [VALIDATION_PROMPT.md](VALIDATION_PROMPT.md) | The prompts that drove the research and spec phases |
 | [directors-assistant-sketch.jsx](directors-assistant-sketch.jsx) | Early throwaway concept sketch (pre-pivot) |
+
+*A couple of early working docs (a personal briefing and essay notes) are kept in my private
+project notes rather than here — so a few process files above may mention them. See DECISIONS.md #8.*
 
 ## Credits & inspiration
 

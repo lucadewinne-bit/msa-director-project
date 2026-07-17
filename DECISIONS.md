@@ -270,3 +270,19 @@ interview and sound exactly like himself.
 - **What would change my mind:** For tiny, obviously-safe tweaks, skip the mockup step.
 - **Outcome:** _in use_ — the age setup, saved-work, parts/storyboard, and navigation
   changes all shipped this way.
+
+---
+
+**#14 — Pre-submission hardening: staff runbook + repo tidy** · 2026-07-16
+- **Decision:** Before submitting, wrote the 1-page **staff runbook** (RUNBOOK.md) so a
+  staff member can run the tool without me — the fellowship's "leave something running"
+  handoff. Also tidied the repo: stopped tracking local editor settings that exposed my
+  machine's paths, removed the application-checkbox/essay-strategy notes from
+  REQUIREMENTS.md (kept the real product constraints), and genericized a personal path
+  in a code comment.
+- **Options considered:** Leave the local config and application-planning notes public.
+- **Why:** The public repo is read by reviewers and should show the product and the honest
+  process — not local machine paths, and not notes that reverse-engineer the application
+  rubric. The runbook also makes the handoff real.
+- **What would change my mind:** —
+- **Outcome:** _done_ — repo is submission-clean; a staff member can run it from RUNBOOK.md.

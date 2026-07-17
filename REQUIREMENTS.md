@@ -14,31 +14,6 @@ Fallback cohorts: January 2027 and August 2027.
 5. Eligibility: 18+, under two years of full-time professional experience,
    US work authorization not dependent on employer sponsorship.
 
-## Written questions (~350 words each) — draft from real material only
-- A time you made an impact in your community.
-  → Spine: the full-circle MSA story + shipping the tool there (see CONTEXT.md).
-- A time you learned from a mistake or setback.
-  → Candidates: a real moment from the build (DECISIONS.md will surface one),
-    or a real story from swimming / MSA productions. Honest > impressive.
-
-## Skills checkboxes — the project must make these HONESTLY checkable
-"Comfortable using" (can open a file and work without a tutorial):
-- [ ] HTML / CSS            ← project front-end, kept simple enough that this is TRUE
-- [ ] Google Apps Script or no-code tool (Zapier, Airtable, etc.) ← feedback workflow
-- Python / JS / SQL: only check if genuinely true by submission. Do not inflate.
-
-"Which have you built":
-- [ ] A chatbot or tool that uses Claude / another LLM   ← the project
-- [ ] Something that uses an API                          ← Claude API
-- [ ] A simple website or web page                        ← the front-end
-- [ ] A workflow that connects two tools                  ← staff feedback form → sheet
-- [ ] A dashboard or data visualization (OPTIONAL — only if time allows: simple
-      visualization of staff feedback)
-
-## Experience checkboxes unlocked by this plan
-- [x] Taught, tutored, or mentored (MSA work — already true)
-- [ ] Built tech for a community org (true once V1 ships at MSA)
-
 ## What they say they're looking for (quote-level fidelity, paraphrased)
 - Built something end-to-end on your own — scoped, shipped, can talk about it
   honestly, including what you'd do differently.

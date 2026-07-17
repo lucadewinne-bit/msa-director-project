@@ -22,7 +22,7 @@ Submitting July 15–16 (not the deadline day) is the target.
 | Staff discovery conversation  | SCHEDULED   | folded into the MSA staff session starting July 13 |
 | Phase 2: build V1             | ✅ DONE     | V1 shipped and DEPLOYED publicly on Vercel (msa-director-project.vercel.app): brainstorm → story-ready glow → PUMA step cards (camera/lights/sound/CapCut) → staff curation with Stash → kid slide mode with read-aloud → save + home page → welcome/journey/help onboarding. Post-testing upgrades: age/length/cast setup tuning the story to the kids, scripts saved with movies + Back up/Restore, reopen cards without regenerating, movie "parts" pills + a Storyboard view, and one consistent 🏠 Home / ✕ Close navigation on every screen (see DECISIONS #9–#13). Remaining (own rows): staff runbook, real MSA test |
 | Test with kids/staff at MSA   | SCHEDULED   | Luca runs it with MSA staff starting July 13 |
-| Staff runbook (1 page)        | NOT STARTED |       |
+| Staff runbook (1 page)        | ✅ DONE     | RUNBOOK.md — a staff member can run the tool without me (linked in README) |
 | Essay 1: community impact     | ✅ DONE     | final version done (kept private, out of the public repo) |
 | Essay 2: setback/learning     | ✅ DONE     | final version done (kept private, out of the public repo) |
 | Resume polished               | ✅ DONE     | done |
