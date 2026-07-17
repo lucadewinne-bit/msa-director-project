@@ -7,3 +7,6 @@ __pycache__/
 
 # Personal files that stay on this computer only
 private_notes/
+
+# Local Claude Code settings (personal paths, not part of the product)
+.claude/settings.local.json

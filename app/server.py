@@ -8,8 +8,8 @@
 #
 # That's the whole "walking skeleton": page -> Claude -> answer on screen.
 #
-# To start it, run this in Terminal:
-#   python3 "/Users/owendewinne/MSA Director Project/app/server.py"
+# To start it, run this in Terminal (from the repo root):
+#   python3 app/server.py
 # Then open  http://localhost:8000  in your browser.
 
 import json
