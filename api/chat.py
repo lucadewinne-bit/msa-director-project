@@ -268,9 +268,15 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length", 0))
-        data = json.loads(self.rfile.read(length))
+        try:
+            data = json.loads(self.rfile.read(length) or b"{}")
+        except (ValueError, TypeError):
+            data = {}
+        if not isinstance(data, dict):
+            data = {}
 
         want = data.get("want")
+        history = data.get("history") or []
 
         if read_api_key() is None:
             # No key set -> free practice mode with pretend answers
@@ -280,19 +286,21 @@ class handler(BaseHTTPRequestHandler):
                 reply = {"text": "🎭 PRACTICE MODE (free, not real Claude)\n\n"
                                  "The full movie script appears here once the real key is connected."}
             else:
-                reply = {"text": practice_reply(data["history"])}
+                reply = {"text": practice_reply(history)}
         else:
             try:
                 if want == "cards":
-                    reply = {"cards": ask_claude_for_cards(data["history"])}
+                    reply = {"cards": ask_claude_for_cards(history)}
                 elif want == "script":
-                    reply = {"text": ask_claude_for_script(data["history"])}
+                    reply = {"text": ask_claude_for_script(history)}
                 else:
-                    reply = {"text": ask_claude(data["history"])}
+                    reply = {"text": ask_claude(history)}
             except anthropic.AuthenticationError:
                 reply = {"error": "The API key doesn't work. Check the Vercel setting."}
             except anthropic.APIError as problem:
                 reply = {"error": f"Claude had a problem: {problem.message}"}
+            except Exception:
+                reply = {"error": "Something went wrong on our side. Please try again."}
 
         body = json.dumps(reply).encode()
         self.send_response(200)
